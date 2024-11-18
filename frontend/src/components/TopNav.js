@@ -44,7 +44,7 @@ const styles = {
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        width: "100%", // 폭을 조금 더 넓게
+        width: "95%", // 폭을 조금 더 넓게
         maxWidth: "1600px", // 최대 폭 증가
         // padding: "0 8px", // 양쪽 여백 추가
         boxSizing: "border-box", // 패딩 포함 계산

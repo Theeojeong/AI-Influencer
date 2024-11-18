@@ -1,5 +1,6 @@
 import React from "react";
 import profileImage from "../assets/img/eddy_blog.png";
+import Write from "../components/Write.js";
 
 const Blog = () => {
     return (
@@ -14,13 +15,14 @@ const Blog = () => {
             {/* 오른쪽 게시글 리스트 */}
             <div style={styles.blogList}>
                 <div style={styles.blogHeader}>
-                    <h3 style={styles.postCount}>목록</h3>
+                    <p style={styles.postCount}>목록</p>
                     <div style={styles.postHeader}>
                         <span>글 제목</span>
                         <span>작성일</span>
                     </div>
                 </div>
             </div>
+            {/* <Write /> */}
         </div> // 모든 내용을 하나의 최상위 요소로 감쌈
     );
 };
@@ -36,12 +38,14 @@ const styles = {
         // boxSizing: "border-box",
     },
     sidebar: {
-        flex: "1",
+        marginTop: "30px",
+        // flex: "1",
         backgroundColor: "#fffdf7",
         borderRadius: "10px",
-        // padding: "30px",
+        padding: "30px",
         boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
         textAlign: "center",
+        marginBottom: "30px"
     
     },
     profileImage: {
@@ -57,6 +61,7 @@ const styles = {
         fontSize: "1.5rem",
         fontWeight: "bold",
         marginBottom: "10px",
+        marginTip: "30px"
     },
     description: {
         fontSize: "0.9rem",
@@ -74,7 +79,8 @@ const styles = {
         width: "100%"
     },
     postCount: {
-        fontSize: "1.2rem",
+        marginTop: "30px",
+        fontSize: "1rem",
         marginBottom: "5px",
     },
     postHeader: {
