@@ -1,12 +1,10 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-
+import Home from "./pages/Home"
+import Profile from "./pages/Profile"
+import Blog from "./pages/Blog"
+import ContactUs from "./pages/ContactUs"
 // 각 페이지 컴포넌트
-const Home = () => <div>Home Page</div>;
-const Profile = () => <div>Profile Page</div>;
-const Blog = () => <div>Blog Page</div>;
-const ContactUs = () => <div>Contact Us Page</div>;
-
 
 function App() {
   return (
