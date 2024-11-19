@@ -54,7 +54,12 @@ const styles = {
         width: "95%", // 가로선 폭을 navbarContent와 동일하게 설정
         maxWidth: "1600px", // 최대 폭 증가
         height: "2px",
-        backgroundColor: "#f5e4ae",
+        backgroundColor: "#f5e4ae", // 중심선 색상
+        boxShadow: `
+        0px 4px 15px rgba(222, 157, 155, 0.7), 
+        0px 8px 30px rgba(222, 157, 155, 0.5)
+        `,
+        backgroundColor: "#de9d9b",
     },
     logo: {
         fontSize: "2.5rem",
