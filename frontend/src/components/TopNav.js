@@ -80,78 +80,78 @@ const TopNav = () => {
         </div>
     );
 };
-
 const styles = {
     navbar: {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         backgroundColor: "#fffaea",
-        padding: "10px 0",
+        padding: "5px 0", // 패딩을 줄여 높이를 얇게 조정
         width: "100%",
+        height: "70px", // 네비게이션 바의 높이 축소
+        boxSizing: "border-box",
+        position: "relative", // 선 고정을 위한 부모 요소 설정
     },
     navbarContent: {
+    
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
         width: "95%",
         maxWidth: "1600px",
         boxSizing: "border-box",
-        paddingBottom: 5,
+        height: "50px", // 내용 높이를 축소하여 더 얇게
     },
     navbarLine: {
         width: "95%",
         maxWidth: "1600px",
-        height: "2px",
-        backgroundColor: "#f5e4ae",
+        height: "1.5px", // 선의 두께를 줄여 더 깔끔하게
         boxShadow: `
-        0px 4px 15px rgba(222, 157, 155, 0.7), 
-        0px 8px 30px rgba(222, 157, 155, 0.5)
+            0px 2px 15px rgba(222, 157, 155, 0.9), 
+            0px 4px 30px rgba(222, 157, 155, 0.7)
         `,
         backgroundColor: "#de9d9b",
+        position: "absolute",
+        bottom: 0,
     },
     logo: {
-        fontSize: "2.5rem",
+        fontSize: "2.3rem", // 로고 크기를 줄여 네비바 높이에 맞춤
         fontWeight: "bold",
         textDecoration: "none",
         color: "#000",
-        transition: "all 0.3s ease-in-out", // 부드러운 전환 효과
+        transition: "all 0.3s ease-in-out",
     },
     logoHover: {
-        fontSize: "2.8rem", // 크기 증가
-        textShadow: `
-            2px 2px 5px rgba(222, 157, 155, 0.7), 
-            0px 0px 10px rgba(222, 157, 155, 0.5)
-        `, // 텍스트 그림자
+        fontSize: "2.4rem", // 호버 시 크기 조금만 증가
+        color: "lightgray",
     },
     navLinks: {
         display: "flex",
-        gap: "90px",
+        gap: "50px", // 링크 간 간격을 줄여 간결하게
         alignItems: "center",
     },
     link: {
         textDecoration: "none",
         color: "#000",
-        padding: 10,
-        fontSize: "1.5rem",
-        transition: "all 0.3s ease-in-out", // 애니메이션 효과
+        padding: 5, // 패딩을 줄여 높이 최적화
+        fontSize: "1.2rem", // 글씨 크기를 줄여 균형 맞춤
+        transition: "all 0.3s ease-in-out",
+        marginRight: "20px"
     },
     linkHover: {
-        fontSize: "1.7rem", // 크기만 증가
-        textShadow: `
-            2px 2px 5px rgba(222, 157, 155, 0.7), 
-            0px 0px 10px rgba(222, 157, 155, 0.5)
-        `, // 텍스트 그림자
+        fontSize: "1.4rem",
+        color: "lightgray",
+        fontWeight: "bold",
     },
     icon: {
         display: "flex",
         alignItems: "center",
-        transition: "all 0.3s ease-in-out", // 부드러운 전환 효과
+        transition: "all 0.3s ease-in-out",
     },
     iconHover: {
-        transform: "scale(1.2)", // 크기 증가
-        filter: "drop-shadow(2px 2px 5px rgba(222, 157, 155, 0.7))", // 그림자 효과
+        transform: "scale(1.1)", // 호버 시 크기 살짝만 증가
     },
 };
+
 
 export default TopNav;
