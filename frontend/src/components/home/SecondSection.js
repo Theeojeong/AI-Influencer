@@ -1,5 +1,5 @@
 import React from "react";
-import Eddy from "../assets/img/eddy.png";
+import Eddy from "../../assets/img/eddy.png";
 import Confetti from "react-confetti";
 import Snowfall from "react-snowfall";
 const SecondSection = () => {

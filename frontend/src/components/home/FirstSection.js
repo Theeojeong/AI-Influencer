@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import logoImage from "../assets/img/logo.png"
+import logoImage from "../../assets/img/logo.png"
 
 import Snowfall from "react-snowfall";
 // 각 페이지 컴포넌트
