@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import logoImage from "../../assets/img/logo.png"
+import logoImage from "../../assets/img/2nd_logo.png"
 
 import Snowfall from "react-snowfall";
 // 각 페이지 컴포넌트
@@ -55,18 +55,19 @@ const styles = {
         height: "100vh",
         overflow: "hidden", // 눈송이가 컨테이너 밖으로 나가지 않도록 설정
         backgroundColor: "#fffaea",
+        background: "linear-gradient(to bottom, #FFFAEA, #FFEFB9)",
     },
     logoSection: {
-        marginTop: "150px",
+        marginTop: "80px",
         display: "flex"
     },
     logoImage: {
-        width: "800px",
+        width: "700px",
         height: "auto",
         display: "block",
         margin: "0 auto",
         alignItems: "center",
-        transition: "opacity 1s ease-in-out",
+        transition: "opacity 3s ease-in-out",
        
     },
     bannerSection: {
@@ -108,11 +109,11 @@ const styles = {
 // #9B706E
 const globalStyle = `
 @keyframes colorChange {
-    0% { color: #de9d9b; }
-    25% { color: #d09593; } 
-    50% { color: #bf8d8b; }
-    75% { color: #b88887; }
-    100% { color: #9b706e; }
+    0% { color: #CD9167; }
+    25% { color: #CD9167; } 
+    50% { color: #CD9167; }
+    75% { color: #A57451; }
+    100% { color: #856044; }
 }`;
 
 const addGlobalStyle = () => {

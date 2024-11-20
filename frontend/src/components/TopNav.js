@@ -41,10 +41,10 @@ const TopNav = () => {
                         onMouseEnter={handleLogoMouseEnter}
                         onMouseLeave={handleLogoMouseLeave}
                     >
-                        eXflu;
+                        🍪
                     </Link>
                     <div style={styles.navLinks}>
-                        {["profile", "blog", "contact us"].map((text) => (
+                        {["profile", "blog", "contact "].map((text) => (
                             <Link
                                 key={text}
                                 to={`/${text.replace(/\s/g, "-")}`}
@@ -70,7 +70,7 @@ const TopNav = () => {
                     >
                         <img
                             src="https://img.icons8.com/ios-glyphs/30/000000/instagram-new.png"
-                            alt="Instagram"
+                            alt="Instagram" style={styles.iconsize}
                         />
                     </a>
                 </div>
@@ -105,12 +105,12 @@ const styles = {
     navbarLine: {
         width: "95%",
         maxWidth: "1600px",
-        height: "1.5px", // 선의 두께를 줄여 더 깔끔하게
+        height: "1px", // 선의 두께를 줄여 더 깔끔하게
         boxShadow: `
-            0px 2px 15px rgba(222, 157, 155, 0.9), 
-            0px 4px 30px rgba(222, 157, 155, 0.7)
+            0px 2px 15px rgba(212, 165, 98, 0.9), 
+            0px 4px 30px rgba(212, 165, 98, 0.7)
         `,
-        backgroundColor: "#de9d9b",
+        backgroundColor: "#F1D1A3",
         position: "absolute",
         bottom: 0,
     },
@@ -140,17 +140,24 @@ const styles = {
     },
     linkHover: {
         fontSize: "1.4rem",
-        color: "lightgray",
+        color: "#A57451",
         fontWeight: "bold",
     },
     icon: {
+        width: "45px",
+        height: "40px",
         display: "flex",
         alignItems: "center",
         transition: "all 0.3s ease-in-out",
     },
     iconHover: {
         transform: "scale(1.1)", // 호버 시 크기 살짝만 증가
+        fontSize: "2rem"
     },
+    iconsize: {
+        marginTop: "5px",
+        width: "40px"
+    }
 };
 
 

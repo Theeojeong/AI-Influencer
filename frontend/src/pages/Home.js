@@ -55,7 +55,7 @@ const styles = {
         top: 0,
         height: "100vh", // 한 화면에 꽉 차게 설정
         // display: "flex",
-        width: "95%",
+        width: "100%",
         justifyContent: "center",
         alignItems: "center",
     },
