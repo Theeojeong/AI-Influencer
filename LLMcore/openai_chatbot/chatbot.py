@@ -1,7 +1,11 @@
+from colorama import init
 from langchain_last_mini.constant import CHATBOT_ROLE, CHATBOT_MESSAGE
 from langchain_last_mini.prompt import create_message
 from langchain_last_mini.chat import response_from_langchain, response_from_runnable_lambda, response_from_runnable_parallel, response_from_langgraph
 import streamlit as st
+from langchain_last_mini.utils import init_chatbot
+
+init_chatbot()
 
 st.title("Chat Bot final mini")
 
