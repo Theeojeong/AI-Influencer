@@ -41,7 +41,7 @@ const TopNav = () => {
                         onMouseEnter={handleLogoMouseEnter}
                         onMouseLeave={handleLogoMouseLeave}
                     >
-                        exFlu;
+                        eXflu;
                     </Link>
                     <div style={styles.navLinks}>
                         {["profile", "blog", "contact "].map((text) => (
