@@ -105,8 +105,8 @@ const styles = {
     container: {
         display: "flex",
         // padding: "40px",
-        marginLeft: "40px",
-        marginRight: "40px",
+        marginLeft: "45px",
+        marginRight: "45px",
         backgroundColor: "#fffaea",
         minHeight: "100vh",
       
@@ -121,10 +121,7 @@ const styles = {
         backgroundColor: "#fffdf7",
         borderRadius: "10px",
         padding: "30px 30px 30px",
-        boxShadow:  `
-        0px 2px 15px rgba(212, 165, 98, 0.3), 
-        0px 4px 30px rgba(212, 165, 98, 0.2)
-        `,
+        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
         // textAlign: "left",
         marginBottom: "30px",
         overflow: "auto"

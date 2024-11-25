@@ -66,8 +66,8 @@ const Blog = () => {
 const styles = {
     container: {
         display: "flex",
-        marginLeft: "40px",
-        marginRight: "40px",
+        marginLeft: "45px",
+        marginRight: "45px",
         backgroundColor: "#fffaea",
         height: "100vh",
     },
@@ -79,9 +79,11 @@ const styles = {
         marginTop: "20px"
     },
     blogHeader: {
-        borderBottom: "2px solid #f5e4ae",
+        borderBottom: "1.5px solid #F1D1A3",
         paddingBottom: "10px",
         marginBottom: "20px",
+       
+  
     },
     postCount: {
         fontSize: "1rem",

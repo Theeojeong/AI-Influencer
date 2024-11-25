@@ -90,12 +90,11 @@ const styles = {
         flexDirection: "column",
         alignItems: "center",
         backgroundColor: "#fffaea",
-        padding: "1vh 0", // 패딩을 줄여 높이를 얇게 조정
+        padding: "5px 0", // 패딩을 줄여 높이를 얇게 조정
         width: "100%",
-        height: "7vh", // 네비게이션 바의 높이 축소
+        height: "70px", // 네비게이션 바의 높이 축소
         boxSizing: "border-box",
         position: "relative", // 선 고정을 위한 부모 요소 설정
-        margin: "0 auto", // 중앙 정렬 유지
     },
     
     navbarContent: {
@@ -104,13 +103,13 @@ const styles = {
         justifyContent: "space-between",
         alignItems: "center",
         width: "95%",
-        
+       
         boxSizing: "border-box",
         height: "50px", // 내용 높이를 축소하여 더 얇게
     },
     navbarLine: {
         width: "95%",
-       
+      
         height: "1px", // 선의 두께를 줄여 더 깔끔하게
         boxShadow: `
             0px 2px 15px rgba(212, 165, 98, 0.9), 
