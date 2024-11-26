@@ -239,22 +239,27 @@ const styles = {
     },
 
     commentForm: {
+        display: "flex",
+        flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
         textAlign: "center",
-        marginTop: "30px"
+        marginTop: "30px",
+        width: "100%"
       
     },
 
     input: {
-        width: "1300px",
+        width: "95%",
+        maxWidth: "1300px",
         height: "40px",
         marginBottom: "10px",
         borderRadius: "10px",
         border: "1px solid #FFFAEA", // 테두리 색상 및 굵기 변경
     },
     textarea: {
-        width: "1300px",
+        width: "95%",
+        maxWidth: "1300px",
         height: "100px",
         borderRadius: "10px",
         border: "1px solid #FFFAEA", // 테두리 색상 및 굵기 변경
