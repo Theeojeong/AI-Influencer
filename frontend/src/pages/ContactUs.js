@@ -74,7 +74,7 @@ const styles = {
     },
     logoImage: {
 
-        width: "60%",
+        width: "50%",
         height: "auto",
         display: "flex",
     },
