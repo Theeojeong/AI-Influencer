@@ -80,8 +80,8 @@ const styles = {
         flex: "2.5",
         background: "linear-gradient(180deg, #FFEFB8 0%, #FFFDF7 25%)",
         marginTop: "30px",
-        marginLeft: "30px",
-        marginRight: "5px",
+        marginLeft: "40px",
+     
         borderRadius: "10px",
         padding: "30px 30px 30px",
         boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
@@ -138,7 +138,7 @@ const styles = {
 
     },
     contentLine: {
-        height: "1px",
+        height: "2px",
         backgroundColor: "#F1D1A3",
         marginBottom: "40px"
     },
