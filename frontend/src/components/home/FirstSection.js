@@ -96,5 +96,20 @@ const styles = {
         margin: 0,
     },
 };
+const globalStyle = `
+@keyframes colorChange {
+    0% { color: #CD9167; }
+    25% { color: #CD9167; } 
+    50% { color: #CD9167; }
+    75% { color: #A57451; }
+    100% { color: #856044; }
+}`;
 
+const addGlobalStyle = () => {
+    const style = document.createElement("style");
+    style.textContent = globalStyle;
+    document.head.appendChild(style);
+};
+
+addGlobalStyle();
 export default FirstSection;
