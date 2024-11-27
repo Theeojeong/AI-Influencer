@@ -1,5 +1,5 @@
 import React from "react"
-import contact from "../assets/img/image.png";
+import contact from "../assets/img/contactus.png";
 const Profile = () => {
     return (
         <div style={styles.container}>

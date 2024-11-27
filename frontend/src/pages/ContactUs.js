@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"; // React Router 훅
-import contact from "../assets/img/image.png";
+import contact from "../assets/img/contactus.png";
 
 const ContactUs = () => {
     const [hoveredYes, setHoveredYes] = useState(false); // Yes 버튼 호버 상태
@@ -50,7 +50,7 @@ const ContactUs = () => {
 
 const styles = {
     container: {
-        position: "relative",
+        
         display: "flex",
         flexDirection: "column",
         alignItems: "center",

@@ -5,8 +5,8 @@ const SideCard = () => {
     return (
         <div style={styles.sidebar}>
                 <img src={profileImage} alt="Profile" style={styles.profileImage} />
-                <h2 style={styles.blogTitle}>Eddy's Blog</h2>
-                <p style={styles.description}>Welcome to my blog!</p>
+                <h2 style={styles.blogTitle}>Eddy's mention!</h2>
+                <p style={styles.description}>어떤 인플루언서를 원하는지 우리가 알아볼께~</p>
         </div>
     )
 }
@@ -14,7 +14,7 @@ const SideCard = () => {
 const styles = {
     sidebar: {
         marginTop: "30px",
-        backgroundColor: "#fffdf7",
+        background: "linear-gradient(180deg, #FFEFB8 0%, #FFFDF7 25%)",
         borderRadius: "10px",
         padding: "40px",
         boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
@@ -32,6 +32,7 @@ const styles = {
         fontSize: "1.5rem",
         fontWeight: "bold",
         marginBottom: "10px",
+        color: "#3F201F",
     },
     description: {
         fontSize: "0.9rem",

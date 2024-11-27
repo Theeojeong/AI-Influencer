@@ -8,7 +8,7 @@ const YesorNo = () => {
     const response = queryParams.get("response"); // response 값 읽기
 
     return (
-        <div style={styles.container}>
+        <div>
             {response === "yes" ? (
                 <YesPage />
             ) : (
@@ -18,16 +18,6 @@ const YesorNo = () => {
     );
 };
 
-const styles = {
-    container: {
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#fffaea",
-        height: "100vh",
-        boxSizing: "border-box",
-        flexDirection: "column",
-    },
-};
+
 
 export default YesorNo
