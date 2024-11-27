@@ -5,6 +5,8 @@ import Home from "./pages/Home"
 import Profile from "./pages/Profile"
 import Blog from "./pages/Blog"
 import ContactUs from "./pages/ContactUs"
+import YesorNo from "./components/contact/YesorNo"
+import Write from "./components/Write";
 // 각 페이지 컴포넌트
 
 function App() {
@@ -20,7 +22,9 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/blog" element={<Blog />} />
-            <Route path="/contact-us" element={<ContactUs />} />
+            <Route path="/blog/eee" element={<Write />} />
+            <Route path="/contact" element={<ContactUs />} />
+            <Route path="/contact/result/" element={<YesorNo />} />
           </Routes>
         </div>
       </div>
@@ -38,7 +42,6 @@ const styles = {
   container: {
     display: "flex",
     flexDirection: "column",
-   
     backgroundColor: "#fffaea",
   },
   
