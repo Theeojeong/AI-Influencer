@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"; // React Router 훅
 import contact from "../assets/img/contactus.png";
+import Snowfall from "react-snowfall";
 
 const ContactUs = () => {
     const [hoveredYes, setHoveredYes] = useState(false); // Yes 버튼 호버 상태
@@ -17,6 +18,11 @@ const ContactUs = () => {
 
     return (
         <div style={styles.container}>
+            <Snowfall
+                    color="white" // 눈 색상
+                    snowflakeCount={150} // 눈송이 개수
+                    style={{ zIndex: 9999 }} // 눈이 모든 요소 위에 표시되도록 설정
+            />
             <section style={styles.logoSection}>
                 <img src={contact} alt="eXflu logo" style={styles.logoImage} />
             </section>
@@ -82,21 +88,23 @@ const styles = {
         padding: "15px 30px",
         fontSize: "1rem",
         border: "none",
-        borderRadius: "10px",
+        borderRadius: "15px",
         cursor: "pointer",
         transition: "background 0.3s ease",
-        backgroundColor: "#f4e1c4",
+        background: "linear-gradient(180deg, rgba(152, 111, 46, 0.5) 0%, rgba(212, 165, 98, 0.5) 100%)",
         color: "#6d4c41",
+        boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
     },
     noButton: {
         padding: "15px 30px",
         fontSize: "1rem",
         border: "none",
-        borderRadius: "10px",
+        borderRadius: "15px",
         cursor: "pointer",
         transition: "background 0.3s ease",
-        backgroundColor: "#e6ccb0",
+        background: "linear-gradient(180deg, rgba(152, 111, 46, 0.5) 0%, rgba(212, 165, 98, 0.5) 100%)",
         color: "#6d4c41",
+        boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
     },
 };
 

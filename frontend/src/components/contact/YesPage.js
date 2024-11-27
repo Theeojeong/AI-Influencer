@@ -85,7 +85,7 @@ const styles = {
         borderRadius: "10px",
         padding: "30px 30px 30px",
         boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-        marginBottom: "40px",
+        marginBottom: "30px",
         overflow: "auto",
     },
     postHeader: {
