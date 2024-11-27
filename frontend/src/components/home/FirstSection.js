@@ -62,7 +62,7 @@ const styles = {
         display: "flex"
     },
     logoImage: {
-        width: "700px",
+        width: "50%",
         height: "auto",
         display: "block",
         margin: "0 auto",
