@@ -2,3 +2,5 @@
 */.venv/
 **/commen/
 */commen/
+__pycache__.*
+*/__pycache__.*
