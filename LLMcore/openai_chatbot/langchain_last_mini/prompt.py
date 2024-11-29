@@ -1,4 +1,4 @@
-from .constant import CHATBOT_MESSAGE, CHATBOT_ROLE
+from langchain_last_mini.constant import CHATBOT_MESSAGE, CHATBOT_ROLE
 from langchain_core.prompts import PromptTemplate
 from langchain import hub
 
