@@ -27,7 +27,7 @@ const Write = () => {
                 const postData = response.data.find((item) => item.post_id === parseInt(id)); // 특정 post_id의 데이터 찾기
                 if (postData) {
                     setPost(postData);
-                 
+ 
                 } else {
                     console.error("게시글을 찾을 수 없습니다.");
                 }
@@ -121,7 +121,7 @@ const Write = () => {
                 </div>
     
                 <div style={{...styles.Imagecontainer, marginTop : isMobile ? "0px" : "20px"}}>
-                    <img src={bombImage} alt="Character Scene" style={{...styles.image, width: isMobile ? "80%" : "60%"}} />
+                    <img src={bombImage} alt="Character Scene" style={{...styles.image, width: isMobile ? "80%" : "50%"}} />
                 </div>
     
                 <div style={{ ...styles.contentbox, marginTop: isMobile ? "5px" : "20px" }}>
@@ -139,7 +139,14 @@ const Write = () => {
                         >
                             로딩 중입니다...
                         </p>
+                       
                     )}
+                    <button style={styles.button}>
+                        <div style={styles.buttonContent}>
+                            <img src={hearticon} alt="heart icon" style={styles.icon} />
+                            <p style={styles.text}>100</p>
+                        </div>
+                    </button>
                 </div>
     
                 <div style={{...styles.commentHeader, gap: isMobile ? "0px" : "5px"}}>
