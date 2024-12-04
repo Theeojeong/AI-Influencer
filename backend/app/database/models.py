@@ -46,6 +46,9 @@ class BlogPost(Base):
 
     # 블록 관계 설정
     blocks = relationship("ContentBlock", back_populates="blog_post")
+    
+    # BlogComment 관계 설정
+    comments = relationship("BlogComment", back_populates="blog_post")
 
 class ContentBlock(Base):
     __tablename__ = "content_blocks"
@@ -58,6 +61,7 @@ class ContentBlock(Base):
 
     # BlogPost 관계
     blog_post = relationship("BlogPost", back_populates="blocks")
+    
 
 class BlogComment(Base):
     __tablename__="blogcomments"
@@ -67,8 +71,10 @@ class BlogComment(Base):
     comment_name = Column(String(50), nullable=False)
     comment_password = Column(String(50), nullable=False)
     comment_content = Column(Text, nullable=False)
-    created_at = Column(DateTime, default=datetime.now() + timedelta(hours=9))
+    created_at = Column(DateTime, default=datetime.now())
     
+    # BlogPost 관계 설정
+    blog_post = relationship("BlogPost", back_populates="comments")
 
 
 # SNSPost 모델 정의
@@ -86,6 +92,9 @@ class SNSPost(Base):
 
     # 블록 관계 설정
     blocks = relationship("ContentBlockForSNS", back_populates="sns_post")
+    
+    # BlogComment 관계 설정
+    comments = relationship("SNSComment", back_populates="sns_post")
 
 class ContentBlockForSNS(Base):
     __tablename__ = "content_blocks_for_sns"
@@ -108,6 +117,8 @@ class SNSComment(Base):
     comment_password = Column(String(50), nullable=False)
     comment_content = Column(Text, nullable=False)
     created_at = Column(DateTime, default=datetime.now() + timedelta(hours=9))
+    # SNSPost 관계 설정
+    sns_post = relationship("SNSPost", back_populates="comments")
 
 class ProductCategories(Base):
     __tablename__='ProductCategories'
