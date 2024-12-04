@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 import profileImage from "../assets/img/eddy_profile.png";
 import bombImage from "../assets/img/bomb_eddy.png";
 import hearticon from "../assets/icons/heart.png";
@@ -9,12 +11,36 @@ import Comment from "./board/CommentList";
 import CommentForm from "./board/CommentForm";
 
 const Write = () => {
+    const { id } = useParams(); // URL에서 게시글 ID 가져오기
+    const [post, setPost] = useState(null); // 게시글 데이터 상태
     const [comments, setComments] = useState([]);
     const [writer, setWriter] = useState("");
     const [password, setPassword] = useState("");
     const [content, setContent] = useState("");
     const [showSideCard, setShowSideCard] = useState(true); // SideCard 표시 여부 상태
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768); // 모바일 여부 상태
+    // console.log(post.content);
+    // 게시글 데이터 가져오기
+    useEffect(() => {
+        const fetchPost = async () => {
+            try {
+                const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}`);
+                const postData = response.data.find((item) => item.post_id === parseInt(id)); // 특정 post_id의 데이터 찾기
+                if (postData) {
+                    setPost(postData);
+                    console.log(postData);
+                    // console.log(postData.content)
+                } else {
+                    console.error("게시글을 찾을 수 없습니다.");
+                }
+            } catch (error) {
+                console.error("게시글 데이터를 가져오는 중 오류 발생:", error);
+            }
+        };
+
+        fetchPost();
+    }, [id]);
+
     const handleAddComment = () => {
         if (!writer || !content) {
             alert("작성자와 내용을 입력해주세요!");
@@ -100,17 +126,22 @@ const Write = () => {
                     <img src={bombImage} alt="Character Scene" style={{...styles.image, width: isMobile ? "80%" : "60%"}} />
                 </div>
     
-                <div style={{...styles.contentbox, marginTop: isMobile ? "5px" : "20px"}}>
-                    <p style={{...styles.content , fontSize : isMobile ? "0.9rem" : "1.1rem"}}>
-                        오늘 뽀로로🐧한테 골탕먹이려다가 폭탄맞음;;;; 뽀로로뽀로로뽀로로뽀로로
-                        
-                    </p>
-                    <button style={styles.button}>
-                        <div style={styles.buttonContent}>
-                            <img src={hearticon} alt="heart icon" style={styles.icon} />
-                            <p style={styles.text}>100</p>
-                        </div>
-                    </button>
+                <div style={{ ...styles.contentbox, marginTop: isMobile ? "5px" : "20px" }}>
+                    {post ? (
+                        <p style={{ ...styles.content, fontSize: isMobile ? "0.9rem" : "1.1rem" }}>
+                            {post.content}
+                        </p>
+                    ) : (
+                        <p
+                            style={{
+                                ...styles.content,
+                                fontSize: isMobile ? "0.9rem" : "1.1rem",
+                                color: "#888",
+                            }}
+                        >
+                            로딩 중입니다...
+                        </p>
+                    )}
                 </div>
     
                 <div style={{...styles.commentHeader, gap: isMobile ? "0px" : "5px"}}>
@@ -169,6 +200,7 @@ const styles = {
         borderRadius: "10px",
         boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
         overflow: "auto",
+        marginBottom: "30px"
     },
     profileImage: {
         display: "flex",
