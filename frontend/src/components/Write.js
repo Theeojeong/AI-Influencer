@@ -19,8 +19,7 @@ const Write = () => {
     const [content, setContent] = useState("");
     const [showSideCard, setShowSideCard] = useState(true); // SideCard 표시 여부 상태
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768); // 모바일 여부 상태
-    // console.log(post.content);
-    // 게시글 데이터 가져오기
+
     useEffect(() => {
         const fetchPost = async () => {
             try {
@@ -28,8 +27,7 @@ const Write = () => {
                 const postData = response.data.find((item) => item.post_id === parseInt(id)); // 특정 post_id의 데이터 찾기
                 if (postData) {
                     setPost(postData);
-                    console.log(postData);
-                    // console.log(postData.content)
+                 
                 } else {
                     console.error("게시글을 찾을 수 없습니다.");
                 }

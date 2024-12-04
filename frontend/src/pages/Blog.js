@@ -20,7 +20,7 @@ const Blog = () => {
             try {
                 const response = await axios.get(process.env.REACT_APP_SERVER_URL); // 서버 API URL
                 setPosts(response.data); // 데이터를 상태에 저장
-                console.log(response.data)
+                // console.log(response.data)
             } catch (error) {
                 console.error("데이터를 가져오는 중 오류 발생:", error);
             }
