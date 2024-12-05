@@ -444,41 +444,41 @@ async def view_some_blog_data_from_DB(post_id: int, db: AsyncSession):
 #     return {"message": f"Blog with post_id {post_id} and its comments deleted successfully"}
 
 async def create_comment_content(comment: CommentCreate, db: AsyncSession):
-    """
-    댓글 생성 및 블로그 글의 댓글 수 증가
-    """
-    pwd_context = make_pwd_to_hash()
-    # 비밀번호 암호화
-    hashed_password = pwd_context.hash(comment.comment_password)
+    try:
+        # 비밀번호 암호화
+        pwd_context = make_pwd_to_hash()
+        hashed_password = pwd_context.hash(comment.comment_password)
 
-    # 댓글 생성
-    new_comment = BlogCommentSimple(
-        post_id=comment.post_id,
-        comment_name=comment.comment_name,
-        comment_password=hashed_password,  # 암호화된 비밀번호 저장
-        comment_content=comment.comment_content,
-    )
-    db.add(new_comment)
+        # 댓글 생성
+        new_comment = BlogCommentSimple(
+            post_id=comment.post_id,
+            comment_name=comment.comment_name,
+            comment_password=hashed_password,
+            comment_content=comment.comment_content,
+        )
+        db.add(new_comment)
 
-    # 댓글 수 증가
-    blog_query = await db.execute(select(BlogPostSimple).where(BlogPostSimple.post_id == comment.post_id))
-    blog = blog_query.scalar_one_or_none()
-    if not blog:
-        raise HTTPException(status_code=404, detail="Blog post not found")
-    blog.comments_count += 1
+        # 댓글 수 증가 (쿼리 최적화)
+        blog = await db.get(BlogPostSimple, comment.post_id)
+        if not blog:
+            raise HTTPException(status_code=404, detail="Blog post not found")
+        blog.comments_count += 1
 
-    await db.commit()
-    await db.refresh(new_comment)
+        await db.commit()
+        # 필요하지 않다면 refresh 제거
+        # await db.refresh(new_comment)
 
-    # Pydantic 모델로 직렬화된 데이터 반환
-    return {
-        "message": "Comment added successfully",
-        "comments_count": blog.comments_count,
-        "comment_id": new_comment.comment_id,
-        "post_id": new_comment.post_id,
-        "comment_name": new_comment.comment_name,
-        "comment_content": new_comment.comment_content,
-    }
+        return {
+            "message": "Comment added successfully",
+            "comments_count": blog.comments_count,
+            "comment_id": new_comment.comment_id,
+            "post_id": new_comment.post_id,
+            "comment_name": new_comment.comment_name,
+            "comment_content": new_comment.comment_content,
+        }
+    except Exception as e:
+        print(f"Error occurred : {str(e)}")
+        raise
 
 
 async def get_comments_contents(post_id: int, db: AsyncSession):
