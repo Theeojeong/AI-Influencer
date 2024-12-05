@@ -25,6 +25,7 @@ const Write = () => {
             try {
                 const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}`);
                 const postData = response.data.find((item) => item.post_id === parseInt(id)); // 특정 post_id의 데이터 찾기
+                
                 if (postData) {
                     setPost(postData);
  
@@ -69,7 +70,7 @@ const Write = () => {
             alert("작성자와 비밀번호가 일치하지 않습니다.");
         }
     };
-
+    
     useEffect(() => {
         const handleResize = () => {
             setShowSideCard(window.innerWidth > 1000);
@@ -81,6 +82,32 @@ const Write = () => {
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
+    useEffect(() => {
+        if (!id) {
+            console.error("댓글 요청에 필요한 ID가 없습니다.");
+            return;
+        }
+    
+        const fetchComments = async () => {
+            try {
+                const url = `${process.env.REACT_APP_SERVER_URL}comments/${id}`;
+                console.log("Fetching comments from:", url);
+                const comment = await axios.get(url);
+                const mappedComments=comment.data.map(comment => ({
+                    id: comment.comment_id,
+                    writer: comment.comment_name,
+                    content: comment.comment_content,
+                }))
+                console.log("ddd", mappedComments);
+                setComments(mappedComments);
+            } catch (error) {
+                console.error("댓글 데이터를 가져오는 중 오류 발생:", error);
+            }
+        };
+    
+        fetchComments();
+    }, [id]);
+    
     return (
         <div
             style={{
@@ -163,7 +190,7 @@ const Write = () => {
                 <div style={styles.contentLine}></div>
     
                 <Comment comments={comments} onEdit={handleEditComment} />
-    
+             
                 <div style={{...styles.writerHeader, gap : isMobile ? "0px" : "5px"}}>
                     <img src={commentwrite} alt="comment icon" style={{...styles.writerword,
                         width : isMobile ? "20px" : "25px",
@@ -175,14 +202,14 @@ const Write = () => {
                     }}>write</p>
                 </div>
                 <CommentForm
-                    writer={writer}
-                    password={password}
-                    content={content}
-                    onWriterChange={(e) => setWriter(e.target.value)}
-                    onPasswordChange={(e) => setPassword(e.target.value)}
-                    onContentChange={(e) => setContent(e.target.value)}
-                    onSubmit={handleAddComment}
+                    postId={id}
+                    onCommentAdded={(newComment) => {
+                        console.log("New Comment:", newComment); // 반환 데이터 확인
+                        setComments((prev) => [...prev, newComment]);
+                    }}
                 />
+
+
             </div>
         </div>
     );
