@@ -20,6 +20,7 @@ async def google_callback(request: Request, db: AsyncSession = Depends(get_db)):
     """
     구글 로그인 콜백
     """
+    print("get oit")
     return await handle_google_callback(request, db)
 
 
