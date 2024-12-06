@@ -25,17 +25,14 @@ async def insert_bizinfo_data_to_DB(bizinfo_data: BizInfoDataRequests, db: Async
         await db.refresh(new_bizinfo)
     except:
         await db.rollback()
-        raise HTTPException(status.HTTP_400_BAD_REQUEST,
-                            detail = "Failed to save data"
-                            )
-    return {"Message":"Success to save of business information to DB",
-        "biz_name" : bizinfo_data.biz_name,
-        "biz_mail" : bizinfo_data.biz_mail,
-        "biz_address" : bizinfo_data.biz_address,
-        "biz_phone" : bizinfo_data.biz_phone,
-        "biz_manager" : bizinfo_data.biz_manager,
-        "category_id" : bizinfo_data.category_id
-        }
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="데이터 저장 중 오류가 발생했습니다.",
+        )
+    return {
+        "Message": "기업 정보가 성공적으로 저장되었습니다.",
+        "biz_name": bizinfo_data.biz_name,
+    }
     
 
 async def search_bizinfo_data_from_DB(biz_key:int, db: AsyncSession):
