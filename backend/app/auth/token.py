@@ -20,8 +20,8 @@ def verify_access_token(token: str):
         if exp and datetime.utcnow().timestamp() > exp:
             raise HTTPException(status_code=401, detail="Token expired")
         return payload
-    except JWTError:
-        raise HTTPException(status_code=401, detail="Invalid token")
+    except JWTError as e:
+        raise HTTPException(status_code=401, detail=f"Invalid token: {e}")
 
 # 인증된 사용자 확인
 def get_current_user(token: str = Depends(oauth2_scheme)):
