@@ -7,7 +7,7 @@ from fastapi import Depends, HTTPException, status
 
 SECRET_KEY = get_parameter("/MYAPP/GOOGLE/AUTH/SECRETKEY")
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 15
+ACCESS_TOKEN_EXPIRE_MINUTES = 60
 REFRESH_TOKEN_EXPIRE_DAYS = 7
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/google")  # 로그인 엔드포인트
