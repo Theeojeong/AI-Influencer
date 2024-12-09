@@ -7,7 +7,7 @@ import hearticon from "../assets/icons/heart.png";
 import comment from "../assets/icons/comment.png";
 import commentwrite from "../assets/icons/write.png";
 import SideCard from "./board/SideCard";
-import Comment from "./board/CommentList";
+import CommentList from "./board/CommentList";
 import CommentForm from "./board/CommentForm";
 
 const Write = () => {
@@ -57,17 +57,33 @@ const Write = () => {
         setContent("");
     };
 
-    const handleEditComment = (id, writer, password) => {
-        const newWriter = prompt("작성자를 입력하세요:", ""); 
-        const newPassword = prompt("비밀번호를 입력하세요:", ""); 
+    const handleEditComment = async (post_id) => {
+        const inputWriter = prompt("작성자를 입력하세요:", ""); 
+        const inputPassword = prompt("비밀번호를 입력하세요:", ""); 
 
-        if (newWriter === writer && newPassword === password) {
-            setComments((prevComments) =>
-                prevComments.filter((comment) => comment.id !== id)
-            );
-            alert("댓글이 삭제되었습니다.");
-        } else {
-            alert("작성자와 비밀번호가 일치하지 않습니다.");
+        
+        try {
+            // 서버에 댓글 삭제 요청
+            const response = await axios.delete(`${process.env.REACT_APP_SERVER_URL}blog/comments/${post_id}`, {
+                data: {
+                    post_id: parseInt(id), // 현재 게시글 ID
+                    comment_name: inputWriter, // 댓글 작성자 이름
+                    comment_password: inputPassword, // 입력한 비밀번호
+                },
+            });
+            console.log("dddd",response);
+            if (response.status === 200) {
+                // 삭제 성공 시 로컬 상태에서 댓글 삭제
+                setComments((prevComments) =>
+                    prevComments.filter((comment) => comment.password !==inputPassword)
+                );
+                alert("댓글이 삭제되었습니다.");
+            } else {
+                alert("비밀번호가 일치하지 않습니다.");
+            }
+        } catch (error) {
+            console.error("댓글 삭제 중 오류 발생:", error);
+            alert("댓글 삭제 중 오류가 발생했습니다. 다시 시도해주세요.");
         }
     };
     
@@ -189,7 +205,7 @@ const Write = () => {
                 </div>
                 <div style={styles.contentLine}></div>
     
-                <Comment comments={comments} onEdit={handleEditComment} />
+                <CommentList comments={comments} onDelete={handleEditComment} />
              
                 <div style={{...styles.writerHeader, gap : isMobile ? "0px" : "5px"}}>
                     <img src={commentwrite} alt="comment icon" style={{...styles.writerword,
