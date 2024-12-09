@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from app.common.config import kakao_id, kaako_redirect_url, kakao_pwd
+from app.common.config import kakao_id, kakao_redirect_url, kakao_pwd
 from fastapi.responses import RedirectResponse
 from fastapi import APIRouter, Depends, Request, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -13,11 +13,11 @@ from app.auth.oauth import oauth
 from app.database.models import User
 
 # 라우터 생성
-router = APIRouter()
+router = APIRouter(tags=["kakao login"])
 
 # Kakao OAuth 정보
 CLIENT_ID = kakao_id
-REDIRECT_URI = kaako_redirect_url
+REDIRECT_URI = kakao_redirect_url
 
 # Jinja2 템플릿 디렉토리 설정
 templates = Jinja2Templates(directory="templates")
