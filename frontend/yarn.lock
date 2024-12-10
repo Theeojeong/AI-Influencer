@@ -1247,6 +1247,11 @@
   resolved "https://registry.npmjs.org/@eslint/js/-/js-8.57.1.tgz"
   integrity sha512-d9zaMRSTIKDLhctzH12MtXvJKSSUhaHcjV+2Z+GK+EEY7XKpP5yR4x+N3TAcHTcu963nIr+TMcCb4DBCYX1z6Q==
 
+"@fontsource/lexend-deca@^5.1.0":
+  version "5.1.0"
+  resolved "https://registry.npmjs.org/@fontsource/lexend-deca/-/lexend-deca-5.1.0.tgz"
+  integrity sha512-wQNEwT5WuA73be4hAVRlj0tPXqDmFYDudN8368UnM3+qA0WSKCK06kJLq19qTszO0v6D5LnxWsLOFcbQB7k+4Q==
+
 "@humanwhocodes/config-array@^0.13.0":
   version "0.13.0"
   resolved "https://registry.npmjs.org/@humanwhocodes/config-array/-/config-array-0.13.0.tgz"
