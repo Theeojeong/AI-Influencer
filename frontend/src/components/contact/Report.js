@@ -1,8 +1,58 @@
 import React from "react";
 import "@fontsource/lexend-deca"; // npm에서 제공하는 경우
 import campaign from "../../assets/img/capaignImage.png";
+import TableComponent from "./components/Table";
+import LineChart from "./components/LineChart";
+import BarChart from "./components/Barchart";
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    BarElement,
+    PointElement, // 추가
+    LineElement, // 추가
+    ArcElement,
+    Tooltip,
+    Legend,
+    Title,
+} from "chart.js";
 
+ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, Title, LineElement, ArcElement, Tooltip, Legend);
 const Report = () => {
+    const lineData = {
+        labels: ["7월", "8월", "9월", "10월", "11월", "12월"],
+        datasets: [
+            {
+             
+                label: "매출 추이",
+                data: [70, 80, 90, 100, 110, 120],
+                borderColor: "#D98077",
+                borderWidth: 2,
+                tension: 0.4,
+                fill: false,
+            },
+        ],
+    };
+    const barData = {
+        labels: ["인플루언서", "에디"],
+        datasets: [
+            {
+                label: "매출",
+                data: [460, 160],
+                backgroundColor: "#D98077",
+            },
+        ],
+    };
+    console.log(barData);
+    
+    const tableData = [
+        { no: 1, content: "좋아요 1등 게시물", likes: 100, comments: 10 },
+        { no: 2, content: "좋아요 2등 게시물", likes: 90, comments: 10 },
+        { no: 3, content: "좋아요 3등 게시물", likes: 80, comments: 10 },
+        { no: 4, content: "좋아요 4등 게시물", likes: 70, comments: 10 },
+        { no: 5, content: "좋아요 5등 게시물", likes: 60, comments: 10 },
+    ];
+
     return (
         <div style={styles.container}>
             <p style={styles.reportTitle}>Bussiness Report</p>
@@ -33,48 +83,7 @@ const Report = () => {
                 {/* 오른쪽 영역: 테이블 */}
                 <div style={styles.overview}>
                     <div style={styles.tableBox}>
-                    <table style={styles.table}>
-                            <thead>
-                                <tr style={styles.tableHeader}>
-                                    <th style={styles.tableCell}>No</th>
-                                    <th style={styles.tableCell}>컨텐츠</th>
-                                    <th style={styles.tableCell}>좋아요</th>
-                                    <th style={styles.tableCell}>댓글 수</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr style={styles.tableRow}>
-                                    <td style={styles.tableCell}>1</td>
-                                    <td style={styles.tableCell}>좋아요 1등 게시물</td>
-                                    <td style={styles.tableCell}>100</td>
-                                    <td style={styles.tableCell}>10</td>
-                                </tr>
-                                <tr style={styles.tableRow}>
-                                    <td style={styles.tableCell}>2</td>
-                                    <td style={styles.tableCell}>좋아요 2등 게시물</td>
-                                    <td style={styles.tableCell}>90</td>
-                                    <td style={styles.tableCell}>10</td>
-                                </tr>
-                                <tr style={styles.tableRow}>
-                                    <td style={styles.tableCell}>3</td>
-                                    <td style={styles.tableCell}>좋아요 3등 게시물</td>
-                                    <td style={styles.tableCell}>80</td>
-                                    <td style={styles.tableCell}>10</td>
-                                </tr>
-                                <tr style={styles.tableRow}>
-                                    <td style={styles.tableCell}>4</td>
-                                    <td style={styles.tableCell}>좋아요 4등 게시물</td>
-                                    <td style={styles.tableCell}>70</td>
-                                    <td style={styles.tableCell}>10</td>
-                                </tr>
-                                <tr style={styles.tableRow}>
-                                    <td style={styles.tableCell}>5</td>
-                                    <td style={styles.tableCell}>좋아요 5등 게시물</td>
-                                    <td style={styles.tableCell}>60</td>
-                                    <td style={styles.tableCell}>10</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <TableComponent data={tableData} />
 
                     </div>
 
@@ -85,14 +94,18 @@ const Report = () => {
                 {/* 왼쪽 영역: "2. 등록 컨텐츠" */}
                 <div style={styles.overviewTitle}>3. 캠페인 성과</div>
 
-                {/* 오른쪽 영역: 테이블 */}
-                <div style={{...styles.overview}}>
-                    {/* 나란히 있는 두개의 박스영역 */}
+                {/* 오른쪽 영역: 차트 넣을것 */}
+                <div style={{ ...styles.overview}}>
                     <div style={styles.twoBoxes}>
-                        <div style={styles.box}>박스 1ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ</div>
-                        <div style={styles.box}>박스 2</div>
-                    </div>
+                        <div style={styles.box}>
+                           
+                            <BarChart data={barData} />
+                        </div>
+                        <div style={styles.box}>
+                            <LineChart data={lineData} />
 
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -204,26 +217,7 @@ const styles = {
         marginTop: "-20px"
        
     },
-    table: {
-        borderCollapse: "collapse",
-        width: "100%",
-    },
-    tableHeader: {
-       
-        fontFamily: "'Lexend Deca', sans-serif",
-        fontWeight: "bold",
-        textAlign: "left",
     
-    },
-    tableRow: {
-        textAlign: "left",
-        padding: "65px 30px",
-        marginBottom:"10px",
-       
-    },
-    tableCell: {
-        padding: "15px 20px", // 각 셀의 여백
-    },
     twoBoxes: {
         display: "flex",
         gap: "30px", // 두 박스 간의 간격
@@ -232,8 +226,8 @@ const styles = {
     },
     box: {
         flex: "1",
-        height: "150px",
-        width: "45%",
+        height: "300px",
+        width: "100%",
         backgroundColor: "#fffdf7",
         border: "2px solid #F5E4AE",
         borderRadius: "20px",
@@ -241,6 +235,7 @@ const styles = {
         justifyContent: "center",
         alignItems: "center",
         boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+        padding: "30px"
     },
     threeButtons: {
         display: "flex",
