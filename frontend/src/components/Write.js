@@ -12,6 +12,7 @@ import CommentForm from "./board/CommentForm";
 
 const Write = () => {
     const { id } = useParams(); // URL에서 게시글 ID 가져오기
+    const [likes, setLikes]=useState(0);
     const [post, setPost] = useState(null); // 게시글 데이터 상태
     const [comments, setComments] = useState([]);
     const [writer, setWriter] = useState("");
@@ -19,6 +20,7 @@ const Write = () => {
     const [content, setContent] = useState("");
     const [showSideCard, setShowSideCard] = useState(true); // SideCard 표시 여부 상태
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768); // 모바일 여부 상태
+    const [isLiked, setIsLiked] = useState(false); // 좋아요 버튼 상태
 
     useEffect(() => {
         const fetchPost = async () => {
@@ -28,6 +30,10 @@ const Write = () => {
                 
                 if (postData) {
                     setPost(postData);
+                    console.log("ddd",response);
+                    console.log("whgd",response.data);
+                    console.log("rere", postData.likes);
+                    setLikes(postData.likes);
  
                 } else {
                     console.error("게시글을 찾을 수 없습니다.");
@@ -40,23 +46,7 @@ const Write = () => {
         fetchPost();
     }, [id]);
 
-    const handleAddComment = () => {
-        if (!writer || !content) {
-            alert("작성자와 내용을 입력해주세요!");
-            return;
-        }
-        const newComment = {
-            id: comments.length + 1,
-            writer,
-            password,
-            content,
-        };
-        setComments([...comments, newComment]);
-        setWriter("");
-        setPassword("");
-        setContent("");
-    };
-
+   
     const handleEditComment = async (post_id) => {
         const inputWriter = prompt("작성자를 입력하세요:", ""); 
         const inputPassword = prompt("비밀번호를 입력하세요:", ""); 
@@ -72,6 +62,7 @@ const Write = () => {
                 },
             });
             console.log("dddd",response);
+            
             if (response.status === 200) {
                 // 삭제 성공 시 로컬 상태에서 댓글 삭제
                 setComments((prevComments) =>
@@ -123,6 +114,24 @@ const Write = () => {
     
         fetchComments();
     }, [id]);
+    
+    const handleLike = async () => {
+        try {
+            // likes 값 증가
+            const updatedLikes = likes + 1;
+            setLikes(updatedLikes);
+            setIsLiked(true); // 버튼 비활성화
+            // 서버에 POST 요청
+            await axios.post(`${process.env.REACT_APP_SERVER_URL}blog/${id}/like`, {
+                likes: updatedLikes,
+            });
+        } catch (error) {
+            console.error("좋아요 업데이트 중 오류 발생:", error);
+            // 에러 발생 시 상태값 복구
+            setLikes((prevLikes) => prevLikes - 1);
+            setIsLiked(false); // 비활성화 상태 복구
+        }
+    };
     
     return (
         <div
@@ -184,10 +193,10 @@ const Write = () => {
                         </p>
                        
                     )}
-                    <button style={styles.button}>
+                    <button style={{ ...styles.button, cursor: isLiked ? "not-allowed" : "pointer" }} onClick={handleLike} disabled={isLiked}>
                         <div style={styles.buttonContent}>
                             <img src={hearticon} alt="heart icon" style={styles.icon} />
-                            <p style={styles.text}>100</p>
+                            <p style={styles.text}>{likes}</p>
                         </div>
                     </button>
                 </div>

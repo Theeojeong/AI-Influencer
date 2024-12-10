@@ -16,7 +16,13 @@ const Blog = () => {
         const fetchPosts = async () => {
             try {
                 const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}blog/`); // 서버 API URL
-                setPosts(response.data); // 데이터를 상태에 저장
+               // 최신글 순으로 정렬
+               const sortedPosts = response.data.sort(
+                    (a, b) => new Date(b.created_at) - new Date(a.created_at)
+                );
+
+            setPosts(sortedPosts); // 정렬된 데이터 상태에 저장
+            console.log(sortedPosts);
             } catch (error) {
                 console.error("데이터를 가져오는 중 오류 발생:", error);
             }
