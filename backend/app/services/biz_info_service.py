@@ -17,7 +17,12 @@ async def insert_bizinfo_data_to_DB(bizinfo_data: BizInfoDataRequests, db: Async
         biz_address = bizinfo_data.biz_address,
         biz_phone = bizinfo_data.biz_phone,
         biz_manager = bizinfo_data.biz_manager,
-        category_id = bizinfo_data.category_id
+        category_id = bizinfo_data.category_id,
+        Q1 = bizinfo_data.Q1,
+        Q2 = bizinfo_data.Q2,
+        Q3 = bizinfo_data.Q3,
+        Q4 = bizinfo_data.Q4,
+        Q5 = bizinfo_data.Q5
     )
     try:
         db.add(new_bizinfo)
@@ -52,7 +57,12 @@ async def search_bizinfo_data_from_DB(biz_key:int, db: AsyncSession):
         biz_address = bizinfo.biz_address,
         biz_phone = bizinfo.biz_phone,
         biz_manager = bizinfo.biz_manager,
-        category_id = bizinfo.category_id
+        category_id = bizinfo.category_id,
+        Q1 = bizinfo.Q1,
+        Q2 = bizinfo.Q2,
+        Q3 = bizinfo.Q3,
+        Q4 = bizinfo.Q4,
+        Q5 = bizinfo.Q5
     )
 
 async def delete_bizinfo_data_from_DB(biz_key:int, db: AsyncSession):
