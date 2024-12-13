@@ -1,5 +1,20 @@
 import streamlit as st
+from streamlit_extras.switch_page_button import switch_page
+import streamlit as st
 import requests
+
+
+# Page 1
+st.title("Connection_test")
+st.write("Welcome to Page 1! Use the buttons below to navigate.")
+
+# 버튼으로 페이지 이동
+if st.button("Go to Main Page"):
+    switch_page("main")
+
+if st.button("Go to Page 2"):
+    switch_page("llm_model")
+
 # Streamlit 제목
 st.title("FastAPI와 Streamlit 간 송수신 테스트")
 

@@ -3,6 +3,18 @@ from langchain_last_mini.prompt import create_message
 from langchain_last_mini.chat import response_from_langchain, response_from_runnable_lambda, response_from_runnable_parallel, response_from_langgraph
 import streamlit as st
 from langchain_last_mini.utils import init_chatbot
+from streamlit_extras.switch_page_button import switch_page
+
+# Page 2
+st.title("LLM Model")
+st.write("Welcome to Page 2! Use the buttons below to navigate.")
+
+# 버튼으로 페이지 이동
+if st.button("Go to Main Page"):
+    switch_page("main")
+
+if st.button("Go to Page 1"):
+    switch_page("connection_test")
 
 init_chatbot()
 
