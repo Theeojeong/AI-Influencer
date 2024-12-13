@@ -15,7 +15,7 @@ const Write = () => {
     const [likes, setLikes]=useState(0);
     const [post, setPost] = useState(null); // 게시글 데이터 상태
     const [comments, setComments] = useState([]);
-  
+    const [image, setImage] = useState(bombImage);
     const [showSideCard, setShowSideCard] = useState(true); // SideCard 표시 여부 상태
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768); // 모바일 여부 상태
     const [isLiked, setIsLiked] = useState(false); // 좋아요 버튼 상태
@@ -32,6 +32,9 @@ const Write = () => {
                     console.log("whgd",response.data);
                     console.log("rere", postData.likes);
                     setLikes(postData.likes);
+                    // image가 null이면 기본 bombImage 사용
+                    setImage(postData.image ? postData.image : bombImage);
+                    console.log("tkwl",postData);
  
                 } else {
                     console.error("게시글을 찾을 수 없습니다.");
@@ -59,7 +62,7 @@ const Write = () => {
                     comment_password: inputPassword, // 입력한 비밀번호
                 },
             });
-            console.log("dddd",response);
+            console.log("dddd",response.data);
             
             if (response.status === 200) {
                 // 삭제 성공 시 로컬 상태에서 댓글 삭제
@@ -171,7 +174,7 @@ const Write = () => {
                 </div>
     
                 <div style={{...styles.Imagecontainer, marginTop : isMobile ? "0px" : "20px"}}>
-                    <img src={bombImage} alt="Character Scene" style={{...styles.image, width: isMobile ? "80%" : "50%"}} />
+                    <img src={image} alt="Character Scene" style={{...styles.image, width: isMobile ? "80%" : "50%"}} />
                 </div>
     
                 <div style={{ ...styles.contentbox, marginTop: isMobile ? "5px" : "20px" }}>
