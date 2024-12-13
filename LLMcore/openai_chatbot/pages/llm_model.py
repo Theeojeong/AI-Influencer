@@ -7,18 +7,21 @@ from streamlit_extras.switch_page_button import switch_page
 
 # Page 2
 st.title("LLM Model")
-st.write("Welcome to Page 2! Use the buttons below to navigate.")
 
-# 버튼으로 페이지 이동
-if st.button("Go to Main Page"):
-    switch_page("main")
+# 버튼 가로 배치
+col1, col2, _ = st.columns([1, 1, 3])  # 두 개의 열 생성
 
-if st.button("Go to Page 1"):
-    switch_page("connection_test")
+with col1:
+    if st.button("Main Page"):
+        switch_page("main")
 
+with col2:
+    if st.button("DB Data Search"):
+        switch_page("DB_Data_Search")
+
+st.write("LLM model에 적절한 키워드를 입력하세요")
 init_chatbot()
 
-st.title("Chat Bot final mini")
 
 # ... existing code ...
 

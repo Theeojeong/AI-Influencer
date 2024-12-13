@@ -1,20 +1,24 @@
 import streamlit as st
 from streamlit_extras.switch_page_button import switch_page
-import streamlit as st
 import requests
+import pandas as pd
 
 
 # Page 1
 st.title("Connection_test")
 st.write("Welcome to Page 1! Use the buttons below to navigate.")
 
-# 버튼으로 페이지 이동
-if st.button("Go to Main Page"):
-    switch_page("main")
+# 버튼 가로 배치
+col1, col2, _ = st.columns([1, 1, 3])  # 두 개의 열 생성
 
-if st.button("Go to Page 2"):
-    switch_page("llm_model")
+with col1:
+    if st.button("Main Page"):
+        switch_page("main")
 
+with col2:
+    if st.button("LLM Model"):
+        switch_page("llm_model")
+        
 # Streamlit 제목
 st.title("FastAPI와 Streamlit 간 송수신 테스트")
 
@@ -37,7 +41,6 @@ if st.button("전송", key="test_butten"):
     except requests.exceptions.RequestException as e:
         st.error(f"요청 실패: {e}")
 
-
 # FastAPI 엔드포인트 URL
 BASE_URL = "http://backdocsend.jamesmoon.click/bizcontacts"  # FastAPI의 기본 URL
 
@@ -47,6 +50,13 @@ st.title("BizContacts 정보 조회 및 관리")
 # 선택 메뉴
 option = st.selectbox("옵션 선택", ["조회: UUID", "조회: Order ID", "데이터 삭제: UUID", "데이터 삭제: Order ID"])
 
+
+# null 값을 처리하는 헬퍼 함수
+def sanitize_response(data):
+    """응답 데이터의 null 값을 기본값으로 대체"""
+    return {key: (value if value is not None else "정보 없음") for key, value in data.items()}
+
+
 if option == "조회: UUID":
     # UUID로 데이터 조회
     uuid = st.text_input("UUID 입력:")
@@ -54,8 +64,12 @@ if option == "조회: UUID":
         if uuid:
             try:
                 response = requests.get(f"{BASE_URL}/uuid/{uuid}")
-                if response.status_code == 200:
-                    st.success(f"조회 결과: {response.json()}")
+                if response.status_code == 201:
+                    # 응답 데이터를 처리
+                    result = response.json()
+                    sanitized_result = sanitize_response(result)
+                    st.success("조회 성공")
+                    st.json(sanitized_result)  # JSON 형식으로 출력
                 else:
                     st.error(f"조회 실패: {response.status_code} - {response.text}")
             except requests.exceptions.RequestException as e:
@@ -70,8 +84,15 @@ elif option == "조회: Order ID":
         if order_id:
             try:
                 response = requests.get(f"{BASE_URL}/order_id/{order_id}")
-                if response.status_code == 200:
-                    st.success(f"조회 결과: {response.json()}")
+                if response.status_code == 201:
+                    # 응답 데이터를 처리
+                    result = response.json()
+                    sanitized_result = sanitize_response(result)
+                    st.success("조회 성공")
+                    
+                    # DataFrame으로 변환하여 테이블 형식으로 출력
+                    st.write("조회 결과:")
+                    st.table(pd.DataFrame([sanitized_result]))
                 else:
                     st.error(f"조회 실패: {response.status_code} - {response.text}")
             except requests.exceptions.RequestException as e:
@@ -86,7 +107,7 @@ elif option == "데이터 삭제: UUID":
         if uuid:
             try:
                 response = requests.delete(f"{BASE_URL}/uuid/{uuid}")
-                if response.status_code == 200:
+                if response.status_code == 201:
                     st.success("데이터 삭제 성공")
                 else:
                     st.error(f"삭제 실패: {response.status_code} - {response.text}")
@@ -102,7 +123,7 @@ elif option == "데이터 삭제: Order ID":
         if order_id:
             try:
                 response = requests.delete(f"{BASE_URL}/order_id/{order_id}")
-                if response.status_code == 200:
+                if response.status_code == 201:
                     st.success("데이터 삭제 성공")
                 else:
                     st.error(f"삭제 실패: {response.status_code} - {response.text}")

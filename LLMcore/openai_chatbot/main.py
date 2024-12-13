@@ -9,14 +9,16 @@ Welcome to the multi-page LLM application!
 Use the sidebar to navigate between different pages.
 """)
 
-
 # Main Page
 st.title("Main Page")
 st.write("Welcome to the Main Page! Use the buttons below to navigate.")
 
-# 버튼으로 페이지 이동
-if st.button("Go to Page 1"):
-    switch_page("connection_test")
+col1, col2, _ = st.columns([1, 1, 3])
 
-if st.button("Go to Page 2"):
-    switch_page("llm_model")
+# 버튼으로 페이지 이동
+with col1:
+    if st.button("DB Data Search"):
+        switch_page("DB_Data_Search")
+with col2:
+    if st.button("LLM Model"):
+        switch_page("llm_model")
