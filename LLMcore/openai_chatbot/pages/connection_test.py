@@ -9,7 +9,7 @@ value = st.number_input("값 입력:", min_value=0, step=1)
 
 # 버튼 클릭 시 FastAPI로 데이터 송신
 if st.button("전송", key="test_butten"):
-    url = "http://test-backend-container:8000/process/"  # FastAPI 엔드포인트 (fastapi url)
+    url = "https://backdocsend.jamesmoon.click/process/"  # FastAPI 엔드포인트 (fastapi url)
     payload = {"name": name, "value": value}  # 전송할 데이터
     try:
         # FastAPI로 POST 요청
@@ -21,6 +21,82 @@ if st.button("전송", key="test_butten"):
             st.error(f"에러: {response.status_code} - {response.json()}")
     except requests.exceptions.RequestException as e:
         st.error(f"요청 실패: {e}")
+
+
+# FastAPI 엔드포인트 URL
+BASE_URL = "http://backdocsend.jamesmoon.click/bizcontacts"  # FastAPI의 기본 URL
+
+# Streamlit 타이틀 설정
+st.title("BizContacts 정보 조회 및 관리")
+
+# 선택 메뉴
+option = st.selectbox("옵션 선택", ["조회: UUID", "조회: Order ID", "데이터 삭제: UUID", "데이터 삭제: Order ID"])
+
+if option == "조회: UUID":
+    # UUID로 데이터 조회
+    uuid = st.text_input("UUID 입력:")
+    if st.button("조회"):
+        if uuid:
+            try:
+                response = requests.get(f"{BASE_URL}/uuid/{uuid}")
+                if response.status_code == 200:
+                    st.success(f"조회 결과: {response.json()}")
+                else:
+                    st.error(f"조회 실패: {response.status_code} - {response.text}")
+            except requests.exceptions.RequestException as e:
+                st.error(f"요청 실패: {e}")
+        else:
+            st.warning("UUID를 입력해주세요.")
+
+elif option == "조회: Order ID":
+    # Order ID로 데이터 조회
+    order_id = st.text_input("Order ID 입력:")
+    if st.button("조회"):
+        if order_id:
+            try:
+                response = requests.get(f"{BASE_URL}/order_id/{order_id}")
+                if response.status_code == 200:
+                    st.success(f"조회 결과: {response.json()}")
+                else:
+                    st.error(f"조회 실패: {response.status_code} - {response.text}")
+            except requests.exceptions.RequestException as e:
+                st.error(f"요청 실패: {e}")
+        else:
+            st.warning("Order ID를 입력해주세요.")
+
+elif option == "데이터 삭제: UUID":
+    # UUID로 데이터 삭제
+    uuid = st.text_input("UUID 입력:")
+    if st.button("삭제"):
+        if uuid:
+            try:
+                response = requests.delete(f"{BASE_URL}/uuid/{uuid}")
+                if response.status_code == 200:
+                    st.success("데이터 삭제 성공")
+                else:
+                    st.error(f"삭제 실패: {response.status_code} - {response.text}")
+            except requests.exceptions.RequestException as e:
+                st.error(f"요청 실패: {e}")
+        else:
+            st.warning("UUID를 입력해주세요.")
+
+elif option == "데이터 삭제: Order ID":
+    # Order ID로 데이터 삭제
+    order_id = st.text_input("Order ID 입력:")
+    if st.button("삭제"):
+        if order_id:
+            try:
+                response = requests.delete(f"{BASE_URL}/order_id/{order_id}")
+                if response.status_code == 200:
+                    st.success("데이터 삭제 성공")
+                else:
+                    st.error(f"삭제 실패: {response.status_code} - {response.text}")
+            except requests.exceptions.RequestException as e:
+                st.error(f"요청 실패: {e}")
+        else:
+            st.warning("Order ID를 입력해주세요.")
+
+
 
 # st.title("Product Category Viewer")
 
@@ -85,71 +161,71 @@ if st.button("전송", key="test_butten"):
         
         
 
-# Streamlit 상태 초기화
-if "products_data" not in st.session_state:
-    st.session_state["products_data"] = None
+# # Streamlit 상태 초기화
+# if "products_data" not in st.session_state:
+#     st.session_state["products_data"] = None
 
-if "specs_laptop_data" not in st.session_state:
-    st.session_state["specs_laptop_data"] = None
+# if "specs_laptop_data" not in st.session_state:
+#     st.session_state["specs_laptop_data"] = None
 
-if "specs_tabletpc_data" not in st.session_state:
-    st.session_state["specs_tabletpc_data"] = None
+# if "specs_tabletpc_data" not in st.session_state:
+#     st.session_state["specs_tabletpc_data"] = None
 
-if "specs_smartphone_data" not in st.session_state:
-    st.session_state["specs_smartphone_data"] = None
+# if "specs_smartphone_data" not in st.session_state:
+#     st.session_state["specs_smartphone_data"] = None
 
-# 제품 데이터 요청
-product_id = st.number_input("제품 ID 입력:", min_value=1, step=1, key="product_id")
-if st.button("제품 정보 조회"):
-    url = "http://test-backend-container:8000/products"
-    response = requests.post(url, json={"product_id": product_id})
-    if response.status_code == 200:
-        st.session_state["products_data"] = response.json()
-    else:
-        st.error("제품 정보를 가져오지 못했습니다.")
+# # 제품 데이터 요청
+# product_id = st.number_input("제품 ID 입력:", min_value=1, step=1, key="product_id")
+# if st.button("제품 정보 조회"):
+#     url = "http://test-backend-container:8000/products"
+#     response = requests.post(url, json={"product_id": product_id})
+#     if response.status_code == 200:
+#         st.session_state["products_data"] = response.json()
+#     else:
+#         st.error("제품 정보를 가져오지 못했습니다.")
 
-# 노트북 사양 데이터 요청
-laptop_id = st.number_input("노트북 ID 입력:", min_value=1, step=1, key="laptop_id")
-if st.button("노트북 사양 조회"):
-    url = "http://test-backend-container:8000/specifications_laptop"
-    response = requests.post(url, json={"product_id": laptop_id})
-    if response.status_code == 200:
-        st.session_state["specs_laptop_data"] = response.json()
-    else:
-        st.error("노트북 사양 정보를 가져오지 못했습니다.")
+# # 노트북 사양 데이터 요청
+# laptop_id = st.number_input("노트북 ID 입력:", min_value=1, step=1, key="laptop_id")
+# if st.button("노트북 사양 조회"):
+#     url = "http://test-backend-container:8000/specifications_laptop"
+#     response = requests.post(url, json={"product_id": laptop_id})
+#     if response.status_code == 200:
+#         st.session_state["specs_laptop_data"] = response.json()
+#     else:
+#         st.error("노트북 사양 정보를 가져오지 못했습니다.")
 
-# 태블릿PC 사양 데이터 요청
-tablet_id = st.number_input("태블릿PC ID 입력:", min_value=1, step=1, key="tablet_id")
-if st.button("태블릿PC 사양 조회"):
-    url = "http://test-backend-container:8000/specifications_tabletpc"
-    response = requests.post(url, json={"product_id": tablet_id})
-    if response.status_code == 200:
-        st.session_state["specs_tabletpc_data"] = response.json()
-    else:
-        st.error("태블릿PC 사양 정보를 가져오지 못했습니다.")
+# # 태블릿PC 사양 데이터 요청
+# tablet_id = st.number_input("태블릿PC ID 입력:", min_value=1, step=1, key="tablet_id")
+# if st.button("태블릿PC 사양 조회"):
+#     url = "http://test-backend-container:8000/specifications_tabletpc"
+#     response = requests.post(url, json={"product_id": tablet_id})
+#     if response.status_code == 200:
+#         st.session_state["specs_tabletpc_data"] = response.json()
+#     else:
+#         st.error("태블릿PC 사양 정보를 가져오지 못했습니다.")
 
-# 스마트폰 사양 데이터 요청
-smartphone_id = st.number_input("스마트폰 ID 입력:", min_value=1, step=1, key="smartphone_id")
-if st.button("스마트폰 사양 조회"):
-    url = "http://test-backend-container:8000/specifications_smartphone"
-    response = requests.post(url, json={"product_id": smartphone_id})
-    if response.status_code == 200:
-        st.session_state["specs_smartphone_data"] = response.json()
-    else:
-        st.error("스마트폰 사양 정보를 가져오지 못했습니다.")
+# # 스마트폰 사양 데이터 요청
+# smartphone_id = st.number_input("스마트폰 ID 입력:", min_value=1, step=1, key="smartphone_id")
+# if st.button("스마트폰 사양 조회"):
+#     url = "http://test-backend-container:8000/specifications_smartphone"
+#     response = requests.post(url, json={"product_id": smartphone_id})
+#     if response.status_code == 200:
+#         st.session_state["specs_smartphone_data"] = response.json()
+#     else:
+#         st.error("스마트폰 사양 정보를 가져오지 못했습니다.")
 
-# 결과 출력
-if st.session_state["products_data"]:
-    st.write("제품 정보:", st.session_state["products_data"])
+# # 결과 출력
+# if st.session_state["products_data"]:
+#     st.write("제품 정보:", st.session_state["products_data"])
 
-if st.session_state["specs_laptop_data"]:
-    st.write("노트북 사양:", st.session_state["specs_laptop_data"])
+# if st.session_state["specs_laptop_data"]:
+#     st.write("노트북 사양:", st.session_state["specs_laptop_data"])
 
-if st.session_state["specs_tabletpc_data"]:
-    st.write("태블릿PC 사양:", st.session_state["specs_tabletpc_data"])
+# if st.session_state["specs_tabletpc_data"]:
+#     st.write("태블릿PC 사양:", st.session_state["specs_tabletpc_data"])
 
-if st.session_state["specs_smartphone_data"]:
-    st.write("스마트폰 사양:", st.session_state["specs_smartphone_data"])
+# if st.session_state["specs_smartphone_data"]:
+#     st.write("스마트폰 사양:", st.session_state["specs_smartphone_data"])
 
 
 
