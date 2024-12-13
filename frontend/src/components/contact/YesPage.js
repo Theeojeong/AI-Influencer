@@ -5,12 +5,13 @@ import Snowfall from "react-snowfall";
 import { useNavigate } from 'react-router-dom';
 import "@fontsource/lexend-deca"; // npm에서 제공하는 경우
 import axios from "axios";
-
+import Loading from "./components/Loading";
 const YesPage = () => {
     const navigate = useNavigate(); // useNavigate 훅 사용
     
     const [showSideCard, setShowSideCard] = useState(true);
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+    const [isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState({
         biz_name: "",
         biz_mail: "",
@@ -45,7 +46,7 @@ const YesPage = () => {
     // 데이터 제출 핸들러
     const handleSubmit = async () => {
         console.log("전송할 데이터:", JSON.stringify(formData, null, 2)); // 디버그용
-    
+        setIsLoading(true);
         try {
             const response = await axios.post(
                 `${process.env.REACT_APP_SERVER_URL}bizinfo/insert`,
@@ -70,6 +71,8 @@ const YesPage = () => {
                 console.error("헤더:", error.response.headers);
             }
             alert("데이터 전송 실패: " + (error.response?.data?.message || "알 수 없는 오류"));
+        } finally {
+            setIsLoading(false);
         }
     };
     
@@ -93,6 +96,16 @@ const YesPage = () => {
     console.log("8",typeof formData.main_platform);
     console.log("9",typeof formData.event_type);
     console.log("10",typeof formData.charactor_type);
+    
+    
+    
+    if (isLoading) {
+        // 로딩 화면 표시
+        return (
+            <Loading />
+        );
+    }
+    
     return (
         <div
             style={{
@@ -383,7 +396,28 @@ const styles = {
         background: "linear-gradient(90deg, #A57451 0%, #CDAC7F 33.9%, #E1C897 63.4%, #F5E4AE 100%)",
         marginBottom: "20px"
 
-    }
+    },
+    loadingContainer: {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh",
+        backgroundColor: "#fffaea",
+    },
+    
+    loadingSpinner: {
+        width: "50px",
+        height: "50px",
+        border: "5px solid #f3f3f3",
+        borderTop: "5px solid #6d4c41",
+        borderRadius: "50%",
+        animation: "spin 1s linear infinite",
+    },
+    loadingText: {
+        marginTop: "20px",
+        fontSize: "1.2rem",
+        color: "#6d4c41",
+    },
 };
 
 export default YesPage;
