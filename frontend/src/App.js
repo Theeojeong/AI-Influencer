@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Link,Navigate} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Link,Navigate, BrowserRouter} from "react-router-dom";
 import TopNav from "./components/TopNav";
 import Home from "./pages/Home"
 import Profile from "./pages/Profile"
@@ -33,6 +33,7 @@ function App() {
 
         {/* 라우트 설정 */}
         <div style={styles.pageContent}>
+      
           <Routes>
             {/* 로그인 필요한 페이지 */}
             <Route
@@ -51,8 +52,9 @@ function App() {
             <Route path="/contact" element={<ContactUs />} />
             <Route path="/contact/result/" element={<YesorNo />} />
             <Route path="/contact/report/" element={<Report />}/>
-            <Route path="/contact/solution/" element={<Solution />}/>
+            <Route path="/solution" element={<Solution />}/>
           </Routes>
+       
         </div>
       </div>
     </Router>

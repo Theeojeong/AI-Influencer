@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import SideCard from "./ContactSidecard";
-import question from "../../assets/img/question.png";
-import Snowfall from "react-snowfall";
+import { useLocation } from "react-router-dom";
 import "@fontsource/lexend-deca"; // npm에서 제공하는 경우
+import ReactMarkdown from "react-markdown"; // react-markdown import
 
 const Solution = () => {
+    const location = useLocation();
+    const { Message, biz_name, ad_outline } = location.state || {}; // 전달된 데이터
     const [showSideCard, setShowSideCard] = useState(true);
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
     return (
@@ -39,7 +41,8 @@ const Solution = () => {
 
                 {/* solution 내용 */}
                 <div>
-                    
+                    <div style={styles.title}>🚀{biz_name}의 광고 솔루션🚀</div>
+                    <ReactMarkdown sytle={styles.content}>{ad_outline}</ReactMarkdown>
                 </div>
             </div>
         </div>
@@ -58,7 +61,7 @@ const styles =  {
     post: {
         flex: "2.5",
         background: "linear-gradient(180deg, #FFEFB8 0%, #FFFDF7 25%)",
-        marginTop: "30px",
+
         marginLeft: "40px",
      
         borderRadius: "10px",
@@ -81,6 +84,16 @@ const styles =  {
         width: "100%",
         background: "linear-gradient(90deg, #3F201F 0%, #724A38 10%, #8C5F45 20%, #FFEFB8 100%)",
         marginBottom: "20px"
+    },
+    title: {
+        fontSize: "1.2rem",
+        color: "#3F201F",
+        fontWeight: "500",
+        marginBottom: "20px",
+        marginTop: "20px"
+    },
+    content: {
+   
     }
 }
 export default Solution;

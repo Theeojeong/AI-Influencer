@@ -1,48 +1,78 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect} from "react";
 import SideCard from "./ContactSidecard";
 import question from "../../assets/img/question.png";
 import Snowfall from "react-snowfall";
+import { useNavigate } from 'react-router-dom';
 import "@fontsource/lexend-deca"; // npm에서 제공하는 경우
+import axios from "axios";
 
 const YesPage = () => {
-    const questions = [
-        {
-            question: "어떤 제품군 / 분야를 홍보하고 싶으신가요?",
-            options: ["전자제품", "의류", "식품", "기타"],
-        },
-        {
-            question: "예상 금액대를 선택해주세요.",
-            options: ["10만원 이하", "10만원 ~ 50만원", "50만원 ~ 100만원", "100만원 이상"],
-        },
-        {
-            question: "원하고자 하는 인플루언서의 메인 활동 플랫폼을 선택해주세요.",
-            options: ["인스타그램", "유튜브", "틱톡", "블로그"],
-        },
-        {
-            question: "원하고자 하는 홍보 이벤트를 선택해주세요.",
-            options: ["리뷰", "이벤트 진행", "홍보 영상 제작", "기타"],
-        },
-        {
-            question: "원하고자 하는 인플루언서의 성별을 입력해주세요.",
-            options: ["남성", "여성", "무관"],
-        },
-    ];
+    const navigate = useNavigate(); // useNavigate 훅 사용
+    
     const [showSideCard, setShowSideCard] = useState(true);
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
     const [formData, setFormData] = useState({
-        companyName: "",
-        email: "",
-        address: "",
-        phone: "",
-        contactName: "",
+        biz_name: "",
+        biz_mail: "",
+        biz_address: "",
+        biz_phone: "",
+        biz_manager: "",
+        category_id: 999,
+        products_categories: "",
+        price: "",
+        main_platform: "",
+        event_type: "",
+        charactor_type: "",
     });
+    console.log(question[0].question);
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData({
             ...formData,
-            [name]: value,
+            [name]: value ,
         });
     };
+
+    // 드롭다운 필드 업데이트
+    const handleSelectChange = (field, value) => {
+        setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+        }));
+    };
+
+
+    // 데이터 제출 핸들러
+    const handleSubmit = async () => {
+        console.log("전송할 데이터:", JSON.stringify(formData, null, 2)); // 디버그용
+    
+        try {
+            const response = await axios.post(
+                `${process.env.REACT_APP_SERVER_URL}bizinfo/insert`,
+                formData,
+                {
+                    headers: {
+                        "Content-Type": "application/json", // JSON 요청임을 명시
+                    },
+                }
+            );
+            alert("데이터 전송 성공");
+            console.log("Response:", response.data);
+            navigate("/solution", {state: response.data}); // '/solution'은 Solution.js가 연결된 라우트 경로
+            
+        } catch (error) {
+            console.error("데이터 전송 중 오류:", error);
+    
+            // 서버 응답 내용 확인
+            if (error.response) {
+                console.error("서버 응답 데이터:", error.response.data);
+                console.error("상태 코드:", error.response.status);
+                console.error("헤더:", error.response.headers);
+            }
+            alert("데이터 전송 실패: " + (error.response?.data?.message || "알 수 없는 오류"));
+        }
+    };
+    
     useEffect(() => {
         const handleResize = () => {
             setShowSideCard(window.innerWidth > 1000); // 768px 이하일 때 SideCard 숨김
@@ -53,7 +83,16 @@ const YesPage = () => {
         window.addEventListener("resize", handleResize); // 리사이즈 이벤트 추가
         return () => window.removeEventListener("resize", handleResize); // 이벤트 제거
     }, []);
-
+    console.log("1",typeof formData.biz_name);
+    console.log("2",typeof formData.biz_mail);
+    console.log("3",typeof formData.biz_address);
+    console.log("4",typeof formData.biz_phone);
+    console.log("5",typeof formData.biz_manager);
+    console.log("6",typeof formData.category_id);
+    console.log("7",typeof formData.price);
+    console.log("8",typeof formData.main_platform);
+    console.log("9",typeof formData.event_type);
+    console.log("10",typeof formData.charactor_type);
     return (
         <div
             style={{
@@ -89,8 +128,8 @@ const YesPage = () => {
                         <label style={styles.label}>Q1. 기업명을 입력해주세요.</label>
                         <input
                             type="text"
-                            name="companyName"
-                            value={formData.companyName}
+                            name="biz_name"
+                            value={formData.biz_name}
                             onChange={handleInputChange}
                             style={styles.input}
                             required
@@ -100,8 +139,8 @@ const YesPage = () => {
                         <label style={styles.label}>Q2. 기업 메일 주소를 입력해주세요.</label>
                         <input
                             type="email"
-                            name="email"
-                            value={formData.email}
+                            name="biz_mail"
+                            value={formData.biz_mail}
                             onChange={handleInputChange}
                             style={styles.input}
                             required
@@ -111,8 +150,8 @@ const YesPage = () => {
                         <label style={styles.label}>Q3. 기업 주소를 입력해주세요.</label>
                         <input
                             type="address"
-                            name="address"
-                            value={formData.address}
+                            name="biz_address"
+                            value={formData.biz_address}
                             onChange={handleInputChange}
                             style={styles.input}
                             required
@@ -122,8 +161,8 @@ const YesPage = () => {
                         <label style={styles.label}>Q4. 담당자 연락처를 입력해주세요.</label>
                         <input
                             type="tel"
-                            name="phone"
-                            value={formData.phone}
+                            name="biz_phone"
+                            value={formData.biz_phone}
                             onChange={handleInputChange}
                             style={styles.input}
                             required
@@ -133,8 +172,8 @@ const YesPage = () => {
                         <label style={styles.label}>Q5. 담당자명을 입력해주세요.</label>
                         <input
                             type="text"
-                            name="contactName"
-                            value={formData.contactName}
+                            name="biz_manager"
+                            value={formData.biz_manager}
                             onChange={handleInputChange}
                             style={styles.input}
                             required
@@ -143,10 +182,14 @@ const YesPage = () => {
                 </form>
                 <div style={{...styles.section, background: "linear-gradient(90deg, #A57451 0%, #CDAC7F 33.9%, #E1C897 63.4%, #F5E4AE 100%)"}}>Section 2. Marketing style</div>
                 <div style={{...styles.sectionLine, background: "linear-gradient(90deg, #A57451 0%, #CDAC7F 33.9%, #E1C897 63.4%, #F5E4AE 100%)"}}></div>
-                    {questions.map((item, index) => (
+                    {/* {questions.map((item, index) => (
                         <div key={index} style={styles.question}>
                             <label style={styles.label}>{`Q${index + 1}. ${item.question}`}</label>
-                            <select style={styles.select}>
+                            <select 
+                                style={styles.select}
+                                value={formData[`Q${index + 1}`]} // formData에서 해당 질문의 값 가져오기
+                                onChange={(e) => handleSelectChange(item.field, e.target.value)} // 선택값 변경
+                            >
                                 {item.options.map((option, idx) => (
                                     <option key={idx} value={option}>
                                         {option}
@@ -154,10 +197,79 @@ const YesPage = () => {
                                 ))}
                             </select>
                         </div>
-                    ))}
+                    ))} */}
+                    <div style={styles.question}>
+                    <label style={styles.label}>Q1. 어떤 제품군 / 분야를 홍보하고 싶으신가요?</label>
+                    <select
+                        style={styles.select}
+                        value={formData.products_categories}
+                        onChange={(e) => handleSelectChange("products_categories", e.target.value)}
+                    >
+                        <option value="선택">선택</option>
+                        <option value="전자제품">전자제품</option>
+                        <option value="의류">의류</option>
+                        <option value="식품">식품</option>
+                        <option value="기타">기타</option>
+                    </select>
+                </div>
+                <div style={styles.question}>
+                    <label style={styles.label}>Q2. 예상 금액대를 선택해주세요.</label>
+                    <select
+                        style={styles.select}
+                        value={formData.price}
+                        onChange={(e) => handleSelectChange("price", e.target.value)}
+                    >
+                        <option value="선택">선택</option>
+                        <option value="10만원 이하">10만원 이하</option>
+                        <option value="10만원 ~ 50만원">10만원 ~ 50만원</option>
+                        <option value="50만원 ~ 100만원">50만원 ~ 100만원</option>
+                        <option value="100만원 이상">100만원 이상</option>
+                    </select>
+                </div>
+                <div style={styles.question}>
+                    <label style={styles.label}>Q3. 원하고자 하는 인플루언서의 메인 활동 플랫폼을 선택해주세요.</label>
+                    <select
+                        style={styles.select}
+                        value={formData.main_platform}
+                        onChange={(e) => handleSelectChange("main_platform", e.target.value)}
+                    >
+                        <option value="선택">선택</option>
+                        <option value="인스타그램">인스타그램</option>
+                        <option value="유튜브">유튜브</option>
+                        <option value="틱톡">틱톡</option>
+                        <option value="블로그">블로그</option>
+                    </select>
+                </div>
+                <div style={styles.question}>
+                    <label style={styles.label}>Q4. 원하고자 하는 홍보 이벤트를 선택해주세요.</label>
+                    <select
+                        style={styles.select}
+                        value={formData.event_type}
+                        onChange={(e) => handleSelectChange("event_type", e.target.value)}
+                    >
+                        <option value="선택">선택</option>
+                        <option value="리뷰">리뷰</option>
+                        <option value="이벤트 진행">이벤트 진행</option>
+                        <option value="홍보 영상 제작">홍보 영상 제작</option>
+                        <option value="기타">기타</option>
+                    </select>
+                </div>
+                <div style={styles.question}>
+                    <label style={styles.label}>Q5. 원하고자 하는 인플루언서의 성별을 입력해주세요.</label>
+                    <select
+                        style={styles.select}
+                        value={formData.charactor_type}
+                        onChange={(e) => handleSelectChange("charactor_type", e.target.value)}
+                    >
+                        <option value="선택">선택</option>
+                        <option value="남성">남성</option>
+                        <option value="여성">여성</option>
+                        <option value="무관">무관</option>
+                    </select>
+                </div>
                 
                 <div style={styles.buttoncontainer}>
-                    <button type="submit" style={styles.submitButton}>
+                    <button type="button" style={styles.submitButton} onClick={handleSubmit}>
                         등록
                     </button>
                 </div>
