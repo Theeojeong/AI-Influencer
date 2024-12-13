@@ -13,6 +13,7 @@ import CommentForm from "./board/CommentForm";
 const Write = () => {
     const { id } = useParams(); // URL에서 게시글 ID 가져오기
     const [likes, setLikes]=useState(0);
+    const [titles, setTitles] = useState("");
     const [post, setPost] = useState(null); // 게시글 데이터 상태
     const [comments, setComments] = useState([]);
     const [image, setImage] = useState(bombImage);
@@ -31,10 +32,12 @@ const Write = () => {
                     console.log("ddd",response);
                     console.log("whgd",response.data);
                     console.log("rere", postData.likes);
+                    setTitles(postData.title);
                     setLikes(postData.likes);
                     // image가 null이면 기본 bombImage 사용
                     setImage(postData.image ? postData.image : bombImage);
                     console.log("tkwl",postData);
+                    console.log("제목", postData.title);
  
                 } else {
                     console.error("게시글을 찾을 수 없습니다.");
@@ -172,7 +175,7 @@ const Write = () => {
                         <p style={{...styles.postDate, fontSize: isMobile ? "0.6rem" : "0.8rem"}}>2024-11-15</p>
                     </div>
                 </div>
-    
+                <div style={styles.title}>{titles}</div>
                 <div style={{...styles.Imagecontainer, marginTop : isMobile ? "0px" : "20px"}}>
                     <img src={image} alt="Character Scene" style={{...styles.image, width: isMobile ? "80%" : "50%"}} />
                 </div>
@@ -272,6 +275,10 @@ const styles = {
         flex: "1",
         marginTop: "-20px",
         marginLeft: "10px",
+    },
+    title: {
+        fontSize: "1.3rem",
+        fontWeight: "500"
     },
     authorName: {
        
