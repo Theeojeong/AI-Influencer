@@ -8,6 +8,7 @@ import ContactUs from "./pages/ContactUs"
 import YesorNo from "./components/contact/YesorNo"
 import Report from "./components/contact/Report"
 import Write from "./components/Write";
+import Solution from "./components/contact/Solution";
 // 각 페이지 컴포넌트
 // 로그인 여부를 관리하는 상태 예제
 const isAuthenticated = () => {
@@ -50,6 +51,7 @@ function App() {
             <Route path="/contact" element={<ContactUs />} />
             <Route path="/contact/result/" element={<YesorNo />} />
             <Route path="/contact/report/" element={<Report />}/>
+            <Route path="/contact/solution/" element={<Solution />}/>
           </Routes>
         </div>
       </div>

@@ -15,9 +15,7 @@ const Write = () => {
     const [likes, setLikes]=useState(0);
     const [post, setPost] = useState(null); // 게시글 데이터 상태
     const [comments, setComments] = useState([]);
-    const [writer, setWriter] = useState("");
-    const [password, setPassword] = useState("");
-    const [content, setContent] = useState("");
+  
     const [showSideCard, setShowSideCard] = useState(true); // SideCard 표시 여부 상태
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768); // 모바일 여부 상태
     const [isLiked, setIsLiked] = useState(false); // 좋아요 버튼 상태

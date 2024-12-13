@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import SideCard from "./ContactSidecard";
 import question from "../../assets/img/question.png";
 import Snowfall from "react-snowfall";
+import "@fontsource/lexend-deca"; // npm에서 제공하는 경우
 
 const YesPage = () => {
     const questions = [
@@ -28,6 +29,20 @@ const YesPage = () => {
     ];
     const [showSideCard, setShowSideCard] = useState(true);
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+    const [formData, setFormData] = useState({
+        companyName: "",
+        email: "",
+        address: "",
+        phone: "",
+        contactName: "",
+    });
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({
+            ...formData,
+            [name]: value,
+        });
+    };
     useEffect(() => {
         const handleResize = () => {
             setShowSideCard(window.innerWidth > 1000); // 768px 이하일 때 SideCard 숨김
@@ -66,13 +81,68 @@ const YesPage = () => {
                     snowflakeCount={150} // 눈송이 개수
                     style={{ zIndex: 9999 }} // 눈이 모든 요소 위에 표시되도록 설정
                 />
-                <div style={styles.postHeader}>
-                    <img src={question} alt="" style={{...styles.questionImage,
-                        width : isMobile ? "70%" : "40%"
-                    }} />
-                </div>
-                <div style={styles.contentLine}></div>
+                
+                <div style={styles.section}>Section 1. Bussiness Info</div>
+                <div style={styles.sectionLine}></div>
                 <form style={styles.form}>
+                    <div style={styles.question}>
+                        <label style={styles.label}>Q1. 기업명을 입력해주세요.</label>
+                        <input
+                            type="text"
+                            name="companyName"
+                            value={formData.companyName}
+                            onChange={handleInputChange}
+                            style={styles.input}
+                            required
+                        />
+                    </div>
+                    <div style={styles.question}>
+                        <label style={styles.label}>Q2. 기업 메일 주소를 입력해주세요.</label>
+                        <input
+                            type="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleInputChange}
+                            style={styles.input}
+                            required
+                        />
+                    </div>
+                    <div style={styles.question}>
+                        <label style={styles.label}>Q3. 기업 주소를 입력해주세요.</label>
+                        <input
+                            type="address"
+                            name="address"
+                            value={formData.address}
+                            onChange={handleInputChange}
+                            style={styles.input}
+                            required
+                        />
+                    </div>
+                    <div style={styles.question}>
+                        <label style={styles.label}>Q4. 담당자 연락처를 입력해주세요.</label>
+                        <input
+                            type="tel"
+                            name="phone"
+                            value={formData.phone}
+                            onChange={handleInputChange}
+                            style={styles.input}
+                            required
+                        />
+                    </div>
+                    <div style={styles.question}>
+                        <label style={styles.label}>Q5. 담당자명을 입력해주세요.</label>
+                        <input
+                            type="text"
+                            name="contactName"
+                            value={formData.contactName}
+                            onChange={handleInputChange}
+                            style={styles.input}
+                            required
+                        />
+                    </div>
+                </form>
+                <div style={{...styles.section, background: "linear-gradient(90deg, #A57451 0%, #CDAC7F 33.9%, #E1C897 63.4%, #F5E4AE 100%)"}}>Section 2. Marketing style</div>
+                <div style={{...styles.sectionLine, background: "linear-gradient(90deg, #A57451 0%, #CDAC7F 33.9%, #E1C897 63.4%, #F5E4AE 100%)"}}></div>
                     {questions.map((item, index) => (
                         <div key={index} style={styles.question}>
                             <label style={styles.label}>{`Q${index + 1}. ${item.question}`}</label>
@@ -85,7 +155,7 @@ const YesPage = () => {
                             </select>
                         </div>
                     ))}
-                </form>
+                
                 <div style={styles.buttoncontainer}>
                     <button type="submit" style={styles.submitButton}>
                         등록
@@ -120,17 +190,8 @@ const styles = {
         marginBottom: "30px",
         overflow: "auto",
     },
-    postHeader: {
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        marginBottom: "20px",
-    },
-    questionImage: {
-        width: "40%",
-        justifyContent: "center",
-        
-    },
+ 
+   
     form: {
         display: "flex",
         flexDirection: "column",
@@ -140,12 +201,14 @@ const styles = {
     question: {
         display: "flex",
         flexDirection: "column",
-        gap: "10px",
-        marginBottom: "30px"
+        gap: "15px",
+        marginBottom: "70px"
     },
     label: {
-        fontSize: "1rem",
+        fontSize: "1.1rem",
         color: "#6d4c41",
+        fontWeight: "500"
+        
     },
     select: {
         width: "80%",
@@ -178,6 +241,36 @@ const styles = {
         display: "flex",
         flexDirection: "column",
         alignItems: "center", // 모든 자식 요소를 가로 중앙 정렬
+    },
+    input: {
+        width: "77%",
+        padding: "10px",
+        borderRadius: "10px",
+        border: "1px solid #ddd",
+        fontSize: "1rem",
+        backgroundColor: "#fff",
+        cursor: "pointer",
+       
+        marginLeft: "20px"
+    },
+    section: {
+        fontFamily: "'Lexend Deca', sans-serif",
+        fontSize: "2rem",
+        background: "linear-gradient(90deg, #A57451 0%, #CDAC7F 33.9%, #E1C897 63.4%, #F5E4AE 100%)",
+        WebkitBackgroundClip: "text",
+        WebkitTextFillColor: "transparent",
+       
+ 
+        lineHeight: "1.5", // 줄 간격 설정
+     
+        
+    },
+    sectionLine: {
+        height: "3px",
+        width: "100%",
+        background: "linear-gradient(90deg, #A57451 0%, #CDAC7F 33.9%, #E1C897 63.4%, #F5E4AE 100%)",
+        marginBottom: "20px"
+
     }
 };
 
