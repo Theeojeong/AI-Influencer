@@ -46,7 +46,7 @@ const Loading = () => {
                 `}
             </style>
             <div style={styles.container}>
-                <span style={loaderStyle}>dddd</span>
+                <span style={loaderStyle}></span>
             </div>
             
         </>

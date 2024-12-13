@@ -49,12 +49,12 @@ function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:id" element={<Write />} />
-            <Route path="/blog/eee" element={<Write />} />
+         
             <Route path="/contact" element={<ContactUs />} />
             <Route path="/contact/result/" element={<YesorNo />} />
             <Route path="/contact/report/" element={<Report />}/>
             <Route path="/solution" element={<Solution />}/>
-            <Route path="/Loading" element={<Loading />} />
+         
           </Routes>
        
         </div>

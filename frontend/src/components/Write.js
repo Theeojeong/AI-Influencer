@@ -9,7 +9,7 @@ import commentwrite from "../assets/icons/write.png";
 import SideCard from "./board/SideCard";
 import CommentList from "./board/CommentList";
 import CommentForm from "./board/CommentForm";
-
+import Loading from "./contact/components/Loading";
 const Write = () => {
     const { id } = useParams(); // URL에서 게시글 ID 가져오기
     const [likes, setLikes]=useState(0);
@@ -29,15 +29,15 @@ const Write = () => {
                 
                 if (postData) {
                     setPost(postData);
-                    console.log("ddd",response);
-                    console.log("whgd",response.data);
-                    console.log("rere", postData.likes);
+                    // console.log("ddd",response);
+                    // console.log("whgd",response.data);
+                    // console.log("rere", postData.likes);
                     setTitles(postData.title);
                     setLikes(postData.likes);
                     // image가 null이면 기본 bombImage 사용
                     setImage(postData.image ? postData.image : bombImage);
-                    console.log("tkwl",postData);
-                    console.log("제목", postData.title);
+                    // console.log("tkwl",postData);
+                    // console.log("제목", postData.title);
  
                 } else {
                     console.error("게시글을 찾을 수 없습니다.");
@@ -65,7 +65,7 @@ const Write = () => {
                     comment_password: inputPassword, // 입력한 비밀번호
                 },
             });
-            console.log("dddd",response.data);
+            // console.log("dddd",response.data);
             
             if (response.status === 200) {
                 // 삭제 성공 시 로컬 상태에서 댓글 삭제
@@ -186,15 +186,15 @@ const Write = () => {
                             {post.content}
                         </p>
                     ) : (
-                        <p
+                        <div
                             style={{
                                 ...styles.content,
                                 fontSize: isMobile ? "0.9rem" : "1.1rem",
                                 color: "#888",
                             }}
                         >
-                            로딩 중입니다...
-                        </p>
+                            <Loading />
+                        </div>
                        
                     )}
                     <button style={{ ...styles.button, cursor: isLiked ? "not-allowed" : "pointer" }} onClick={handleLike} disabled={isLiked}>
