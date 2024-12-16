@@ -17,13 +17,17 @@ const Write = () => {
     const { id } = useParams(); // URL에서 게시글 ID 가져오기
     const [likes, setLikes]=useState(0);
     const [titles, setTitles] = useState("");
-    const [post, setPost] = useState(null); // 게시글 데이터 상태
+    const [post, setPost] = useState(null); // 게시글 데이터 상태'
+    const [date, setDate] = useState("");
     const [comments, setComments] = useState([]);
     const [image, setImage] = useState(bombImage);
     const [showSideCard, setShowSideCard] = useState(true); // SideCard 표시 여부 상태
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768); // 모바일 여부 상태
     const [isLiked, setIsLiked] = useState(false); // 좋아요 버튼 상태
-
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+    };
     useEffect(() => {
         const fetchPost = async () => {
             try {
@@ -39,6 +43,7 @@ const Write = () => {
                     setLikes(postData.likes);
                     // image가 null이면 기본 bombImage 사용
                     setImage(postData.image ? postData.image : bombImage);
+                    setDate(formatDate(postData.created_at));
                     // console.log("tkwl",postData);
                     // console.log("제목", postData.title);
  
@@ -125,6 +130,8 @@ const Write = () => {
     
         fetchComments();
     }, [id]);
+
+    
     
     const handleLike = async () => {
         try {
@@ -179,7 +186,7 @@ const Write = () => {
                     />
                     <div style={{...styles.authorInfo}}>
                         <p style={{...styles.authorName, fontSize: isMobile ? "0.8rem" : "1rem"}}>Eddy</p>
-                        <p style={{...styles.postDate, fontSize: isMobile ? "0.6rem" : "0.8rem"}}>2024-11-15</p>
+                        <p style={{...styles.postDate, fontSize: isMobile ? "0.6rem" : "0.8rem"}}>{date}</p>
                     </div>
                 </div>
                 <div style={styles.title}>{titles}</div>
