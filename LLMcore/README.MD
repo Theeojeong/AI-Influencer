@@ -72,6 +72,7 @@ LLMcore/
 │   ├── pages/
 │   │   ├── llm_model.py          # LLM 챗봇 인터페이스
 │   │   └── DB_Data_Search.py     # 데이터베이스 검색 인터페이스
+│   │
 │   └── langchain_last_mini/      # LangChain 관련 모듈
 │       ├── chat.py               # 챗봇 핵심 로직
 │       ├── chain.py              # LangChain 체인 구현
@@ -79,6 +80,7 @@ LLMcore/
 │       ├── model.py              # 모델 설정
 │       ├── prompt.py             # 프롬프트 템플릿
 │       └── utils.py              # 유틸리티 함수
+│   │
 ├── dockerfile                     # Docker 컨테이너 설정
 ├── requirements.txt              # 프로젝트 의존성
 └── buildspec.yml                 # AWS 빌드 설정
