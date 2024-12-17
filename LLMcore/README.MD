@@ -80,7 +80,7 @@ LLMcore/
 │       ├── model.py              # 모델 설정
 │       ├── prompt.py             # 프롬프트 템플릿
 │       └── utils.py              # 유틸리티 함수
-│   │
+│ 
 ├── dockerfile                     # Docker 컨테이너 설정
 ├── requirements.txt              # 프로젝트 의존성
 └── buildspec.yml                 # AWS 빌드 설정
