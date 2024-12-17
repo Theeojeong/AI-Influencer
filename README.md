@@ -130,6 +130,8 @@ pytest
 - 커밋 메시지: Conventional Commits 형식 사용
 
 
+---
+
 ## Frontend 구조
 
 ```
@@ -227,8 +229,11 @@ frontend/
 - 마크다운 에디터 지원
 
 ### 3. 반응형 디자인
-- 모바일 대응 레이아웃
-- 다크모드 지원
+- 모바일 대응 레이아웃 
+- 동적 이벤트 효과
+  - 눈 내리는 효과
+  - 스크롤 애니메이션
+  - 호버 인터랙션
 
 ## Frontend 설치 및 실행
 
@@ -247,8 +252,8 @@ npm run dev
 
 ### 환경변수 설정 (.env)
 ```
-VITE_API_URL=http://localhost:8000
-VITE_WS_URL=ws://localhost:8000
+VITE_API_URL=http://localhost:3000
+VITE_WS_URL=ws://localhost:3000
 ```
 
 ## 개발 가이드라인
@@ -277,7 +282,9 @@ npm run build
 npm run preview
 ```
 
-## LLMCore 구조
+---
+
+# LLMCore 구조
 
 ```
 LLMcore/
