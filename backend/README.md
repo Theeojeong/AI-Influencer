@@ -110,6 +110,7 @@ backend/
 │   │   ├── blog.py            # 블로그 관련 API
 │   │   ├── core_check.py      # 핵심 기능 점검검 API
 │   │   ├── core.py            # 핵심 기능 API
+│   │   ├── ollama.py          # ollama API
 │   │   ├── google_auth.py     # Google 인증
 │   │   ├── healthcheck.py     # AWS healthcheck 인증
 │   │   ├── kakao_auth.py      # Kakao 인증
@@ -173,6 +174,7 @@ backend/
 
 5. **AI 통합**
    - OpenAI API 활용
+   - Ollama API 활용
    - 컨텐츠 생성
    - 자연어 처리
 

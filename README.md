@@ -299,7 +299,7 @@ LLMcore/
 │   │   ├── llm_model.py          # LLM 챗봇 인터페이스
 │   │   └── DB_Data_Search.py     # 데이터베이스 검색 인터페이스
 │   │
-│   ├── langchain_last_mini/      # LangChain 관련 모듈
+│   ├── langchain_openai_api/      # LangChain 관련 모듈
 │   │   ├── langgraph/
 │   │   │   ├── agent.py          # langgraph agent 설정
 │   │   │   ├── graph.py          # langgraph compile 로직 설정
