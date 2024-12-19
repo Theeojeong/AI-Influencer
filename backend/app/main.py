@@ -1,5 +1,4 @@
 from app.router import blog, core, core_check, process_check, healthcheck, test, sns, biz_info, biz_contacts, google_auth, kakao_auth, exaone
-from backend.app.router import exaone
 from fastapi import FastAPI, UploadFile, File, Request
 from fastapi.middleware.cors import CORSMiddleware
 from app.logger import setup_logging

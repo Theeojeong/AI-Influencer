@@ -1,8 +1,10 @@
 from fastapi import HTTPException
-from backend.app.schemas.exaone import PromptRequest
+from app.schemas.exaone import GenerateRequest
 from app.common.config import OLLAMA_API_URL
 import requests
 import json
+import httpx
+import logging
 
 def generate_ollama_exaone_service(payload: dict):
     """
@@ -25,3 +27,32 @@ def generate_ollama_exaone_service(payload: dict):
                     continue  # JSON 파싱 에러는 무시
     except Exception as e:
         yield json.dumps({"error": str(e)})
+
+logging.basicConfig(level=logging.DEBUG)
+
+async def generate_stream(payload: dict):
+    """
+    Ollama 서버와의 스트리밍 통신 처리.
+    JSON 데이터를 파싱하여 `response` 필드만 반환.
+    """
+    try:
+        timeout = httpx.Timeout(10.0, read=20.0)  # 타임아웃 설정
+        async with httpx.AsyncClient(timeout=timeout) as client:
+            async with client.stream("POST", OLLAMA_API_URL, json=payload) as response:
+                if response.status_code != 200:
+                    raise HTTPException(status_code=response.status_code, detail=f"Error from Ollama server: {response.status_code}")
+                async for line in response.aiter_text():
+                    # 빈 줄 무시
+                    if not line.strip():
+                        continue
+                    try:
+                        # JSON 파싱 및 `response` 필드 추출
+                        data = json.loads(line.strip())
+                        if "response" in data and data["response"]:
+                            logging.debug(f"Extracted response: {data['response']}")
+                            yield data["response"]
+                    except json.JSONDecodeError as e:
+                        logging.error(f"Failed to decode JSON: {line.strip()}")
+                        continue
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Streaming failed: {str(e)}")
