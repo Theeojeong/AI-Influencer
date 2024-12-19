@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { likeState } from "../components/board/recoil/atoms";
 import axios from "axios";
 import profileImage from "../assets/img/eddy_profile.png";
 import bombImage from "../assets/img/bomb_eddy.png";
@@ -24,10 +26,18 @@ const Write = () => {
     const [showSideCard, setShowSideCard] = useState(true); // SideCard 표시 여부 상태
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768); // 모바일 여부 상태
     const [isLiked, setIsLiked] = useState(false); // 좋아요 버튼 상태
+    const [likeMap, setLikeMap] = useRecoilState(likeState);
     const formatDate = (dateString) => {
         const date = new Date(dateString);
         return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
     };
+
+    useEffect(() => {
+        // 좋아요 상태 초기화
+        if (likeMap[id]) {
+            setIsLiked(true);
+        }
+    }, [id, likeMap]);
     useEffect(() => {
         const fetchPost = async () => {
             try {
@@ -134,6 +144,7 @@ const Write = () => {
     
     
     const handleLike = async () => {
+        if (isLiked) return;
         try {
             // likes 값 증가
             const updatedLikes = likes + 1;
@@ -142,6 +153,13 @@ const Write = () => {
             // 서버에 POST 요청
             await axios.post(`${process.env.REACT_APP_SERVER_URL}blog/${id}/like`, {
                 likes: updatedLikes,
+            });
+
+            // Recoil 상태 업데이트 및 로컬 스토리지 저장
+            setLikeMap((prev) => {
+                const updated = { ...prev, [id]: true };
+                localStorage.setItem("likes", JSON.stringify(updated)); // 로컬 스토리지에 저장
+                return updated;
             });
         } catch (error) {
             console.error("좋아요 업데이트 중 오류 발생:", error);
@@ -211,9 +229,9 @@ const Write = () => {
                         </div>
                        
                     )}
-                    <button style={{ ...styles.button, cursor: isLiked ? "not-allowed" : "pointer" }} onClick={handleLike} disabled={isLiked}>
+                    <button style={{ ...styles.button, backgroundColor: isLiked ? "#F0CAC9" : "#FFE8E7"}} onClick={handleLike} disabled={isLiked}>
                         <div style={styles.buttonContent}>
-                            <img src={hearticon} alt="heart icon" style={styles.icon} />
+                            <img src={hearticon} alt="heart icon" style={{...styles.icon}} />
                             <p style={styles.text}>{likes}</p>
                         </div>
                     </button>
