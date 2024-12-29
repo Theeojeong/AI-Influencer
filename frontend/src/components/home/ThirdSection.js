@@ -103,7 +103,7 @@ const styles = {
     },
     description: {
         color: "#555",
-        marginTop: "-139px",
+        marginTop: "-149px",
     },
 };
 
