@@ -1,7 +1,7 @@
 import torch
 import os
 
-embedding_cache_file = "C:\\dev\\nejot\\DB_embedding\\1212_2차_embedding.pt"
+embedding_cache_file = "C:\\dev\\LLM_Blog\\DB_embedding\\1212_2차_embedding.pt"
 specs_to_check = ["아틀라스 시더 향", "패출리 노트"]
 
 if os.path.exists(embedding_cache_file):

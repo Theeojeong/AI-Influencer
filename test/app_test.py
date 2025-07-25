@@ -23,7 +23,7 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 GOOGLE_CSE_ID = os.getenv("GOOGLE_CSE_ID")
 
-embedding_cache_file = "C:\\FINAL\\nejot\\DB_embedding\\1212_2차_embedding.pt"
+embedding_cache_file = "C:\\FINAL\\LLM_Blog\\DB_embedding\\1212_2차_embedding.pt"
 device = "cpu"
 
 def get_openai_embedding(text):
