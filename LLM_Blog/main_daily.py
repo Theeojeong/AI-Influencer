@@ -1,6 +1,5 @@
 import os
 import pymysql
-import base64
 import openai
 import streamlit as st
 from dotenv import load_dotenv
@@ -15,13 +14,15 @@ from utils.ai_utils import get_ai_suggested_titles
 
 # .env 파일 로드
 load_dotenv()
-openai.api_key = os.getenv("OPENAI_API_KEY")  # .env에 담긴 OPENAI_API_KEY 사용
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+if not OPENAI_API_KEY:
+    st.error("OPENAI_API_KEY가 설정되어 있지 않습니다. .env 파일을 확인하세요.")
+    st.stop()
+openai.api_key = OPENAI_API_KEY  # .env에 담긴 OPENAI_API_KEY 사용
 
 st.set_page_config(layout="wide")
 
-# 블로그 제목 입력과 AI 추천 제목 관련 상태 관리
-if "blog_title_input" not in st.session_state:
-    st.session_state["blog_title_input"] = ""
+# AI 추천 제목 관련 상태 관리
 if "suggested_titles" not in st.session_state:
     st.session_state["suggested_titles"] = []
     
@@ -38,7 +39,8 @@ def regenerate_titles_cb():
     if not product_name:
         st.warning("제품명을 먼저 입력해주세요.")
         return
-    new_titles = get_ai_suggested_titles(product_name, max_suggestions=4)
+    with st.spinner("제목을 생성 중입니다..."):
+        new_titles = get_ai_suggested_titles(product_name, max_suggestions=4)
     if new_titles:
         st.session_state["suggested_titles"] = new_titles
     else:
@@ -107,7 +109,8 @@ with left_col:
         if not final_title:
             st.warning("블로그 제목을 입력하거나 AI 추천 제목을 사용해주세요.")
         else:
-            result, used_urls = blog_generation_workflow(
+            with st.spinner("블로그 글을 생성 중입니다... 잠시만 기다려주세요."):
+                result, used_urls = blog_generation_workflow(
                 st.session_state["product_name"],
                 product_specs_list,
                 final_title,
@@ -227,20 +230,27 @@ with right_col:
             with c_submit_btn:
                 if st.button("제출하기"):
 
+                    title_to_save = st.session_state.get("blog_title_widget", "")
+                    if not title_to_save:
+                        st.warning("제목이 없습니다. '글 생성'을 먼저 실행해주세요.")
+                        st.stop()
+
                     if uploaded_image is not None:
+                        if uploaded_image.size > 5 * 1024 * 1024:  # 5MB 제한
+                            st.warning("이미지 용량은 5MB 이하만 가능합니다.")
+                            st.stop()
                         image_bytes = uploaded_image.read()
                     else:
                         image_bytes = None
-                        
-                    connection = pymysql.connect(**DB_CONFIG)
+
+                    from utils.db_utils import get_connection
                     try:
-                        with connection.cursor() as cursor:
-                            insert_sql = """INSERT INTO blog_posts_1 (title, content, image) 
-                                            VALUES (%s, %s, %s)"""
-                            cursor.execute(insert_sql, (blog_title, result_text, image_bytes))
-                        connection.commit()
+                        with get_connection() as connection:
+                            with connection.cursor() as cursor:
+                                insert_sql = """INSERT INTO blog_posts_1 (title, content, image)
+                                                VALUES (%s, %s, %s)"""
+                                cursor.execute(insert_sql, (title_to_save, result_text, image_bytes))
+                            connection.commit()
                         st.success("성공적으로 제출되었습니다!")
                     except Exception as e:
                         st.error(f"DB 저장 중 오류 발생: {e}")
-                    finally:
-                        connection.close()
