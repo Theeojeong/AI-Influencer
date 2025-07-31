@@ -1,15 +1,15 @@
 import os
-import pymysql
+import html
 import openai
 import streamlit as st
 from dotenv import load_dotenv
 
 from streamlit_tags import st_tags
-from streamlit_modal import Modal
+# from streamlit_modal import Modal  # 제거: st.dialog 사용
 
-from config import DB_CONFIG
 from graphs.blog_generation_graph import blog_generation_workflow
 from utils.ai_utils import get_ai_suggested_titles
+from utils.db_utils import get_connection
 
 
 # .env 파일 로드
@@ -25,52 +25,63 @@ st.set_page_config(layout="wide")
 # AI 추천 제목 관련 상태 관리
 if "suggested_titles" not in st.session_state:
     st.session_state["suggested_titles"] = []
+if "show_ai_modal" not in st.session_state:
+    st.session_state["show_ai_modal"] = False
+
+@st.dialog("AI 추천 블로그 제목")
+def show_ai_titles_dialog():
+    """AI 추천 제목을 보여주는 다이얼로그"""
+    product_name = st.session_state.get("product_name", "")
     
-
-# 모달 객체 생성 (AI 추천 제목 목록을 표시하는 데 사용)
-ai_titles_modal = Modal(
-    "AI 추천 블로그 제목",  # 첫 번째 인자는 title
-    key="ai_titles_modal"  # 두 번째 인자는 key
-)
-
-def regenerate_titles_cb():
-    """콜백: GPT를 통해 새 제목 리스트를 세션에 저장 (재생성)"""
-    product_name = st.session_state.get("product_name","")
-    if not product_name:
-        st.warning("제품명을 먼저 입력해주세요.")
-        return
-    with st.spinner("제목을 생성 중입니다..."):
-        new_titles = get_ai_suggested_titles(product_name, max_suggestions=4)
-    if new_titles:
-        st.session_state["suggested_titles"] = new_titles
-    else:
-        st.warning("추천 제목을 생성하지 못했습니다.")
-    # rerun 없이도 streamlit이 한번 더 UI갱신 해주므로, 굳이 experimental_rerun 안써도 됨
-
-def on_use_title_cb(selected: str):
-    """사용하기 버튼 콜백: 라디오로 선택한 제목을 텍스트 입력 위젯에 반영"""
-    if not selected:
-        st.warning("제목을 선택하세요.")
-        return
-    # 여기서 위젯 key("blog_title_widget")에 해당하는 세션 값을 대입
-    st.session_state["blog_title_widget"] = selected
-    ai_titles_modal.close()
-
-def close_modal_cb():
-    """콜백: 모달 닫기"""
-    ai_titles_modal.close()
+    # 제목이 없으면 생성
+    if not st.session_state["suggested_titles"]:
+        with st.spinner("제목을 생성 중입니다..."):
+            new_titles = get_ai_suggested_titles(product_name, max_suggestions=4)
+            if new_titles:
+                st.session_state["suggested_titles"] = new_titles
+            else:
+                st.error("추천 제목을 생성하지 못했습니다.")
+                return
+    
+    st.write("AI가 추천한 블로그 제목들을 아래에서 골라주세요.")
+    
+    # 라디오 선택
+    if st.session_state["suggested_titles"]:
+        selected_title = st.radio(
+            "제목 선택",
+            st.session_state["suggested_titles"],
+        )
+        
+        # 버튼들
+        c1, c2, c3 = st.columns([1,1,1])
+        with c1:
+            if st.button("재생성"):
+                with st.spinner("제목을 생성 중입니다..."):
+                    new_titles = get_ai_suggested_titles(product_name, max_suggestions=4)
+                    if new_titles:
+                        st.session_state["suggested_titles"] = new_titles
+                        st.rerun()
+        with c2:
+            if st.button("사용하기"):
+                st.session_state["blog_title_widget"] = selected_title
+                st.session_state["show_ai_modal"] = False
+                st.rerun()
+        with c3:
+            if st.button("닫기"):
+                st.session_state["show_ai_modal"] = False
+                st.rerun()
 
 left_col, right_col = st.columns([1,2])
 
 with left_col:
     st.title("🦊에디's 블로그 글")
 
-        # 제품명 저장을 위해 세션에 product_name 키 사용
+    # 제품명 저장을 위해 세션에 product_name 키 사용
     if "product_name" not in st.session_state:
         st.session_state["product_name"] = ""
     st.session_state["product_name"] = st.text_input("제품명을 입력하세요:", value=st.session_state["product_name"])
 
-        # blog_title_input 키 사용 → AI가 선택한 제목을 반영 가능
+    # blog_title_input 키 사용 → AI가 선택한 제목을 반영 가능
     blog_title = st.text_input(
         "블로그 제목을 입력하세요:",
         key="blog_title_widget",
@@ -78,9 +89,13 @@ with left_col:
     )
 
     if st.button("AI 추천 제목"):
-        # GPT로부터 제목 생성 -> 모달 오픈
-        regenerate_titles_cb()
-        ai_titles_modal.open()
+        product_name = st.session_state.get("product_name", "")
+        if not product_name:
+            st.warning("제품명을 먼저 입력해주세요.")
+        else:
+            # 새로 열 때마다 이전 제목 초기화 (선택사항)
+            st.session_state["suggested_titles"] = []
+            st.session_state["show_ai_modal"] = True
 
 
     product_specs_list = st_tags(
@@ -111,44 +126,20 @@ with left_col:
         else:
             with st.spinner("블로그 글을 생성 중입니다... 잠시만 기다려주세요."):
                 result, used_urls = blog_generation_workflow(
-                st.session_state["product_name"],
-                product_specs_list,
-                final_title,
-                keywords_list
-            )
+                    st.session_state["product_name"],
+                    product_specs_list,
+                    final_title,
+                    keywords_list
+                )
             if result:
                 st.session_state["original_result"] = result
                 st.session_state["used_urls"] = used_urls
             else:
                 st.warning("글 생성에 실패했습니다.")
 
-# 모달
-if ai_titles_modal.is_open():
-    with ai_titles_modal.container():
-        st.write("AI가 추천한 블로그 제목들을 아래에서 골라주세요.")
-
-        # 라디오: 지역 변수
-        selected_title = None
-        if st.session_state["suggested_titles"]:
-            selected_title = st.radio(
-                "제목 선택",
-                st.session_state["suggested_titles"],
-            )
-        else:
-            st.write("아직 AI 추천 제목이 없습니다.")
-
-        # 하단 버튼들
-        c1, c2, c3 = st.columns([1,1,1])
-        with c1:
-            st.button("재생성", on_click=regenerate_titles_cb)
-        with c2:
-            st.button(
-                "사용하기",
-                on_click=on_use_title_cb,
-                args=(selected_title,)
-            )
-        with c3:
-            st.button("닫기", on_click=close_modal_cb)
+# 다이얼로그 표시
+if st.session_state["show_ai_modal"]:
+    show_ai_titles_dialog()
 
 
 with right_col:
@@ -161,9 +152,6 @@ with right_col:
             )
         else:
             # (1) 본문 렌더링
-            import re
-            import html
-
             # 원본 텍스트
             result_text = st.session_state["original_result"]
 
@@ -243,7 +231,6 @@ with right_col:
                     else:
                         image_bytes = None
 
-                    from utils.db_utils import get_connection
                     try:
                         with get_connection() as connection:
                             with connection.cursor() as cursor:
