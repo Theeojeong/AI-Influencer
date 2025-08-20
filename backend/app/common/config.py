@@ -4,47 +4,67 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.ext.declarative import declarative_base
 import boto3
+import os
+import logging
+from dotenv import load_dotenv
 
-def get_parameter(name, with_decryption=True):
-    client = boto3.client('ssm', region_name="ap-northeast-2")
+# Load .env if present (for local development)
+load_dotenv(override=True)
+
+
+def _env_key_from_ssm(name: str) -> str:
+    # Convert "/MYAPP/DB/USERNAME" -> "DB_USERNAME"
+    parts = name.strip("/").split("/")
+    return "_".join(parts[1:]) if len(parts) > 1 else parts[0]
+
+
+def get_parameter(name, with_decryption=True, default: str | None = None):
+    # 1) Prefer environment variable for local development
+    env_key = _env_key_from_ssm(name)
+    env_val = os.getenv(env_key)
+    if env_val is not None:
+        return env_val
+
+    # 2) Try AWS SSM (for deployed environments)
     try:
-        response = client.get_parameter(
-            Name=name,
-            WithDecryption=with_decryption
-        )
+        client = boto3.client('ssm', region_name="ap-northeast-2")
+        response = client.get_parameter(Name=name, WithDecryption=with_decryption)
         return response['Parameter']['Value']
-    except client.exceptions.ParameterNotFound:
-        raise ValueError(f"Parameter '{name}' not found in AWS SSM.")
     except Exception as e:
-        raise ValueError(f"AWS SSM 요청 중 오류 발생: {str(e)}")
+        if default is not None:
+            logging.warning(f"SSM fetch failed for {name}. Using default/env. Error: {e}")
+            return default
+        logging.warning(f"SSM fetch failed for {name}. Set env '{env_key}' to run locally. Error: {e}")
+        return ""
 
 
+# Parameter Store에서 값을 가져오되, 로컬에선 환경변수/기본값 사용
+db_username = get_parameter("/MYAPP/DB/USERNAME", default="root")
+db_password = get_parameter("/MYAPP/DB/PASSWORD", default="")
+db_host = get_parameter("/MYAPP/DB/HOST", default="127.0.0.1")
+db_port = get_parameter("/MYAPP/DB/PORT", default="3306")
+db_name = get_parameter("/MYAPP/DB/DB_NAME", default="test")
+s3_name = get_parameter("/MYAPP/S3/NAME", default=os.getenv("AWS_ACCESS_KEY_ID", ""))
+s3_key = get_parameter("/MYAPP/S3/KEY", default=os.getenv("AWS_SECRET_ACCESS_KEY", ""))
 
-# Parameter Store에서 값을 가져옴
-db_username = get_parameter("/MYAPP/DB/USERNAME")
-db_password = get_parameter("/MYAPP/DB/PASSWORD")
-db_host = get_parameter("/MYAPP/DB/HOST")
-db_port = get_parameter("/MYAPP/DB/PORT")
-db_name = get_parameter("/MYAPP/DB/DB_NAME")
-s3_name = get_parameter("/MYAPP/S3/NAME")
-s3_key = get_parameter("/MYAPP/S3/KEY")
+# DATABASE_URL 우선 순위: ENV > 조합값
+DATABASE_URL = os.getenv(
+    "DATABASE_URL",
+    f"mysql+asyncmy://{db_username}:{db_password}@{db_host}:{db_port}/{db_name}"
+)
 
-# DATABASE_URL 구성
-DATABASE_URL = f"mysql+asyncmy://{db_username}:{db_password}@{db_host}:{db_port}/{db_name}"
+# KAKAO AUTH (로컬 기본값 허용)
+kakao_id = get_parameter("/MYAPP/KAKAO/AUTH/NAME", default=os.getenv("KAKAO_ID", ""))
+kakao_pwd = get_parameter("/MYAPP/KAKAO/AUTH/PWD", default=os.getenv("KAKAO_PWD", ""))
+kakao_redirect_url = os.getenv("KAKAO_REDIRECT_URL", "http://127.0.0.1:8000/auth/kakao/callback")
 
-# KAKAO AUTH
+OLLAMA_API_URL = get_parameter("/MYAPP/sLLM/BASE", default=os.getenv("OLLAMA_API_URL", "http://localhost:11434"))
 
-kakao_id = get_parameter("/MYAPP/KAKAO/AUTH/NAME")
-kakao_pwd = get_parameter("/MYAPP/KAKAO/AUTH/PWD")
-kakao_redirect_url = "http://127.0.0.1:8000/auth/kakao/callback"
-
-OLLAMA_API_URL = get_parameter("/MYAPP/sLLM/BASE")
-
-# S3 클라이언트 생성
+# S3 클라이언트 생성 (자격 없더라도 생성만, 실제 업로드 시 실패 가능)
 s3_client = boto3.client(
     "s3",
-    aws_access_key_id=s3_name,
-    aws_secret_access_key=s3_key,
+    aws_access_key_id=s3_name or None,
+    aws_secret_access_key=s3_key or None,
     region_name=REGION_NAME,
 )
 

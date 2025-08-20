@@ -5,11 +5,13 @@ from app.logger import setup_logging
 from app.auth.token import SECRET_KEY
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.middleware.sessions import SessionMiddleware
-from starlette.responses import Response
+from starlette.responses import Response, FileResponse
+from fastapi.staticfiles import StaticFiles
 import uvicorn
 import base64
 import time
 import logging
+import os
 
 
 app = FastAPI()
@@ -59,6 +61,34 @@ app.include_router(biz_contacts.router)
 app.include_router(exaone.router)
 app.include_router(core_check.router)
 app.include_router(test.router)
+
+# ===== Serve React build (frontend) on root, if available =====
+def _build_dir() -> str:
+    # backend/app/main.py -> repo_root/frontend/build
+    here = os.path.dirname(os.path.abspath(__file__))
+    build_dir = os.path.abspath(os.path.join(here, "../../frontend/build"))
+    return build_dir
+
+
+BUILD_DIR = _build_dir()
+if os.path.isdir(BUILD_DIR):
+    # Serve static assets under /static (CRA output)
+    static_path = os.path.join(BUILD_DIR, "static")
+    if os.path.isdir(static_path):
+        app.mount("/static", StaticFiles(directory=static_path), name="static")
+
+    # Root index.html
+    @app.get("/", include_in_schema=False)
+    async def index():
+        return FileResponse(os.path.join(BUILD_DIR, "index.html"))
+
+    # SPA fallback: serve actual file if exists, otherwise index.html
+    @app.get("/{full_path:path}", include_in_schema=False)
+    async def spa_fallback(full_path: str):
+        target = os.path.join(BUILD_DIR, full_path)
+        if os.path.isfile(target):
+            return FileResponse(target)
+        return FileResponse(os.path.join(BUILD_DIR, "index.html"))
 
 # 실행
 if __name__ == "__main__":

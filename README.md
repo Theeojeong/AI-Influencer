@@ -65,6 +65,15 @@
   <img src="https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=Swagger&logoColor=black">
 </div>
 
+## 🖼 데모 스크린샷
+
+<p align="center">
+  <img src="image.png" alt="홈페이지 데모" width="800" />
+  <br/>
+  <sub>로컬 경로 C:\\SKN03-FINAL\\image.png에서 가져온 데모 이미지</sub>
+  
+</p>
+
 ## 📁 프로젝트 구조
 
 ```
@@ -111,7 +120,7 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```bash
 cd frontend
 npm install
-npm run dev
+npm start
 ```
 
 ### LLMcore 설정
@@ -143,8 +152,8 @@ KAKAO_CLIENT_ID=your-kakao-client-id
 
 ### Frontend (.env)
 ```env
-VITE_API_URL=http://localhost:8000
-VITE_WS_URL=ws://localhost:8000
+# CRA 기준. 백엔드 주소(슬래시로 끝나게)
+REACT_APP_SERVER_URL=http://localhost:8000/
 ```
 
 ### LLMcore (.env)
@@ -188,3 +197,32 @@ pytest tests/
 - Frontend: 구나연
 - AI & LLM: 정재현, 문건우
 - DevOps: 김성은, 문건우
+
+---
+
+## 🧭 로컬 실행 가이드(백엔드에서 프론트 서빙)
+
+아래 절차를 따르면 FastAPI(8000 포트)에서 프론트엔드 정적 파일을 함께 제공합니다.
+
+1) 프론트엔드 환경변수와 빌드
+```bash
+cd frontend
+echo REACT_APP_SERVER_URL=http://127.0.0.1:8000/ > .env
+npm install
+npm run build
+```
+
+2) 백엔드 실행
+```bash
+cd backend
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+3) 접속 경로
+- 앱: http://127.0.0.1:8000 (상단 메뉴의 daily 사용)
+- API 문서: http://127.0.0.1:8000/docs
+
+4) 주의사항
+- DB 없이도 daily의 AI 제목/본문 생성은 동작합니다. 단, 글 저장/목록/댓글/좋아요는 DB 필요.
+- LLM 기능은 다음 키가 필요합니다(.env 또는 OS 환경변수):
+  - `OPENAI_API_KEY`, `GOOGLE_API_KEY`, `GOOGLE_CSE_ID`
