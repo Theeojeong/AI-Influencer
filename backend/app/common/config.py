@@ -6,10 +6,12 @@ from sqlalchemy.ext.declarative import declarative_base
 import boto3
 import os
 import logging
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 
-# Load .env if present (for local development)
-load_dotenv(override=True)
+# Load .env from repo root if present (for local development)
+_dotenv_path = find_dotenv(usecwd=True)
+if _dotenv_path:
+    load_dotenv(_dotenv_path, override=True)
 
 
 def _env_key_from_ssm(name: str) -> str:

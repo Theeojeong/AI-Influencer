@@ -8,7 +8,7 @@ from langchain.vectorstores import FAISS
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.chains import RetrievalQA
 from langchain.llms import OpenAI as LangchainOpenAI
-from config import DB_CONFIG, OPENAI_API_KEY, GOOGLE_API_KEY, GOOGLE_CSE_ID
+from LLM_Blog.config import DB_CONFIG, OPENAI_API_KEY, GOOGLE_API_KEY, GOOGLE_CSE_ID
 
 def blog_generation_workflow(product_name, product_specs_list, blog_title, keywords):
 

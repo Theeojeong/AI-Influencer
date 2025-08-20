@@ -3,7 +3,7 @@ import torch
 import openai
 import os
 from openai import OpenAI
-from config import OPENAI_API_KEY, EMBEDDING_CACHE_FILE
+from LLM_Blog.config import OPENAI_API_KEY, EMBEDDING_CACHE_FILE
 
 client = OpenAI(api_key=OPENAI_API_KEY)
 
@@ -22,7 +22,7 @@ def get_openai_embedding(text: str) -> torch.Tensor | None:
         return None
 
 def update_embedding_cache(model_name, information):
-    from config import EMBEDDING_CACHE_FILE
+    from LLM_Blog.config import EMBEDDING_CACHE_FILE
     new_embedding = get_openai_embedding(model_name + " " + information.strip() if information else model_name)
     if new_embedding is not None:
         if os.path.exists(EMBEDDING_CACHE_FILE):

@@ -57,7 +57,15 @@ const DailyBlog = () => {
   const [usedUrls, setUsedUrls] = useState([]);
   const [imageFile, setImageFile] = useState(null);
 
-  const SERVER = process.env.REACT_APP_SERVER_URL;
+  const BASE = useMemo(() => {
+    let base = process.env.REACT_APP_SERVER_URL;
+    if (!base && typeof window !== "undefined") {
+      base = window.location.origin + "/";
+    }
+    if (!base) base = "/";
+    if (!base.endsWith("/")) base += "/";
+    return base;
+  }, []);
 
   const counts = useMemo(() => {
     const charCount = content.length;
@@ -75,7 +83,7 @@ const DailyBlog = () => {
     }
     try {
       setLoading(true);
-      const res = await axios.post(`${SERVER}blog/ai/suggest_titles`, {
+      const res = await axios.post(`${BASE}blog/ai/suggest_titles`, {
         product_name: productName,
         max: 4,
       });
@@ -97,7 +105,7 @@ const DailyBlog = () => {
     }
     try {
       setLoading(true);
-      const res = await axios.post(`${SERVER}blog/ai/generate`, {
+      const res = await axios.post(`${BASE}blog/ai/generate`, {
         product_name: productName,
         product_specs: specs,
         blog_title: titleToUse,
@@ -127,7 +135,7 @@ const DailyBlog = () => {
       fd.append("product_id", "1");
       fd.append("is_ad", "0");
       if (imageFile) fd.append("image", imageFile);
-      await axios.post(`${SERVER}blog/add`, fd, {
+      await axios.post(`${BASE}blog/add`, fd, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       alert("성공적으로 제출되었습니다!");
@@ -368,4 +376,3 @@ const styles = {
 };
 
 export default DailyBlog;
-

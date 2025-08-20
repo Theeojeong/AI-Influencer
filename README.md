@@ -74,6 +74,65 @@
   
 </p>
 
+## ⚡ 빠른 시작(로컬 실행 요약)
+
+- 요구 사항: Python 3.10+, Node.js LTS 설치
+- 실행 순서는 “프론트 빌드 → 백엔드 실행 → 브라우저 접속”입니다.
+
+1) 키(.env) 준비
+```env
+# 위치: C:\SKN03-FINAL\.env (또는 backend\.env)
+OPENAI_API_KEY=발급받은키
+# 본문 생성에 필요
+GOOGLE_API_KEY=발급키
+GOOGLE_CSE_ID=발급ID
+```
+
+2) 프론트 빌드(CRA)
+```bash
+cd frontend
+echo REACT_APP_SERVER_URL=http://127.0.0.1:8000/ > .env
+npm install
+npm run build
+```
+
+3) 백엔드 실행(FastAPI)
+```bash
+cd backend
+# 가상환경이 없다면 최초 1회
+python -m venv .venv
+.\.venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload --port 8000
+```
+
+4) 접속 경로
+- 앱: http://127.0.0.1:8000/daily (Daily 페이지에서 AI 추천/생성 기능)
+- API 문서: http://127.0.0.1:8000/docs
+
+5) 참고
+- DB 없이도 Daily의 AI 제목/본문 생성은 동작합니다. “제출하기(저장)”와 블로그 목록/댓글/좋아요는 DB 필요.
+- 이미지 업로드는 AWS 자격이 필요합니다. 로컬 테스트에서는 이미지를 업로드하지 않는 것을 권장합니다.
+
+## 🛠 문제 해결(자주 발생)
+
+- /daily가 404인 경우: 프론트를 빌드(npm run build)하고 백엔드를 재시작하세요.
+- “제목 추천 중 오류” 또는 401 Unauthorized: OPENAI_API_KEY가 비어있거나 기본값입니다. .env에 실제 키를 넣고 서버 재시작.
+- “글 생성” 실패: GOOGLE_API_KEY, GOOGLE_CSE_ID를 .env에 넣었는지 확인.
+- 요청 경로가 /undefinedblog/... 로 보이면: 프론트를 다시 빌드하세요(npm run build 후 백엔드 재시작).
+- AWS SSM 자격 오류: 로컬에서는 무시해도 됩니다(이미지 업로드 기능만 제한). 키는 .env로 읽도록 구성되어 있습니다.
+
+## 🔧 프론트 개발 모드로 보기(선택)
+
+백엔드(8000)를 띄운 상태에서 프론트를 개발 서버로 실행할 수도 있습니다.
+```bash
+cd frontend
+echo REACT_APP_SERVER_URL=http://127.0.0.1:8000/ > .env
+npm install
+npm start
+# 접속: http://localhost:3000
+```
+
 ## 📁 프로젝트 구조
 
 ```
