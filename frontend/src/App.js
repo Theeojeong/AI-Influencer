@@ -4,6 +4,7 @@ import TopNav from "./components/TopNav";
 import Home from "./pages/Home"
 import Profile from "./pages/Profile"
 import Blog from "./pages/Blog"
+import DailyBlog from "./pages/DailyBlog"
 import ContactUs from "./pages/ContactUs"
 import YesorNo from "./components/contact/YesorNo"
 import Report from "./components/contact/Report"
@@ -47,6 +48,7 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/blog" element={<Blog />} />
+              <Route path="/daily" element={<DailyBlog />} />
               <Route path="/blog/:id" element={<Write />} />
             
               <Route path="/contact" element={<ContactUs />} />

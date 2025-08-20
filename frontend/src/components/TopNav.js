@@ -77,7 +77,7 @@ const TopNav = () => {
                                 justifyContent: windowWidth >= 768 ? "center" : "flex-start", // PC에서 중앙 정렬
                             }}
                         >
-                            {["profile", "blog", "contact"].map((text) => (
+                            {["profile", "blog", "daily", "contact"].map((text) => (
                                 <Link
                                     key={text}
                                     to={`/${text}`}

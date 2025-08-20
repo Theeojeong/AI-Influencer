@@ -53,3 +53,24 @@ class BlogCommentCountReapone(BaseModel):
     post_id: int
     comments_count: int
     
+
+# ====== AI generation (frontend integration) ======
+class TitleSuggestRequest(BaseModel):
+    product_name: str
+    max: int = 4
+
+
+class TitleSuggestResponse(BaseModel):
+    titles: List[str]
+
+
+class GenerateBlogRequest(BaseModel):
+    product_name: str
+    product_specs: List[str]
+    blog_title: str
+    keywords: List[str]
+
+
+class GenerateBlogResponse(BaseModel):
+    content: str
+    used_urls: List[str]

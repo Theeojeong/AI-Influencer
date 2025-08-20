@@ -37,3 +37,14 @@ authlib
 # Open AI
 openai
 anyio
+
+# --- For AI blog generation (LLM_Blog workflow reuse) ---
+langchain
+langchain-openai
+langchain-community
+faiss-cpu
+unstructured[all-docs]
+google-api-python-client
+torch
+tiktoken
+numpy
