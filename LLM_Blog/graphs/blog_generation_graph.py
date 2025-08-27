@@ -3,12 +3,14 @@ from chains.embedding_chain import update_embedding_cache
 from chains.outline_chain import create_outline_with_additional_info
 from chains.content_chain import generate_blog_content
 from langchain.document_loaders import UnstructuredURLLoader
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain.vectorstores import FAISS
-from langchain.embeddings import OpenAIEmbeddings
-from langchain.chains import RetrievalQA
-from langchain.llms import OpenAI as LangchainOpenAI
+from langchain_upstage import UpstageEmbeddings
+from langchain_openai import ChatOpenAI
 from LLM_Blog.config import DB_CONFIG, OPENAI_API_KEY, GOOGLE_API_KEY, GOOGLE_CSE_ID
+from dotenv import load_dotenv
+
+load_dotenv()
 
 def blog_generation_workflow(product_name, product_specs_list, blog_title, keywords):
 
@@ -39,12 +41,12 @@ def blog_generation_workflow(product_name, product_specs_list, blog_title, keywo
                 
 
                 else:
-                    embeddings = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY)
+                    embeddings = UpstageEmbeddings(model="embedding-query")
                     vectorstore = FAISS.from_documents(split_docs, embeddings)
                     retriever = vectorstore.as_retriever(search_type="similarity", search_k=3)
 
                     qa_chain = RetrievalQA.from_chain_type(
-                        llm=LangchainOpenAI(openai_api_key=OPENAI_API_KEY),
+                        llm=ChatOpenAI(model="gpt-4o"),
                         chain_type="stuff",
                         retriever=retriever
                     )
