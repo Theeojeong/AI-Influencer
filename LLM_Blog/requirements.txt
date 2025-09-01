@@ -1,24 +1,24 @@
-langchain 
-langchain-experimental 
-langchain-openai 
-langchain_community 
-langchain-huggingface 
+langchain>=0.2.7
+langchain-openai>=0.1.22
+langchain-community>=0.2.7
+langchain-text-splitters>=0.2.2
+langgraph>=0.2.0
 
-pymysql 
+pymysql
 
-google-api-python-client 
-google-auth-httplib2 
-google-auth-oauthlib 
+google-api-python-client
+google-auth-httplib2
+google-auth-oauthlib
 
-nest_asyncio 
-numpy 
+nest_asyncio
+numpy
 openai
 torch
 faiss-cpu
 unstructured[all-docs]
 
-streamlit 
-streamlit-tags 
+streamlit
+streamlit-tags
 streamlit_quill
 streamlit-modal
 streamlit_extras

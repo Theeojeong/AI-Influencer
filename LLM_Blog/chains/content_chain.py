@@ -1,51 +1,43 @@
-from langchain.prompts import PromptTemplate
-from langchain.chains import LLMChain
-from langchain.chat_models import ChatOpenAI
+from langchain_openai import ChatOpenAI
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import StrOutputParser
+from LLM_Blog.config import OPENAI_API_KEY
 
-def generate_blog_content(outline, blog_title, keywords, product_name, openai_api_key):
-    content_prompt = PromptTemplate(
-        input_variables=["outline"],
-        template=f"""
-        목차:
-        {{outline}}
 
-        블로그 제목: {blog_title}
-        키워드: {keywords}
-        제품명: {product_name}
-
-        여기까지 블로그 글 작성을 위한 가이드라인 및 참고할 정보야.
-
-        이 정보를 기반으로 풍부한 설명과 사람이 작성한 것 같은 담백한 광고성 블로그 글(seo요소 포함)을 작성해주세요.
-        그리고 애니메이션 캐릭터같이 귀여운 말투로 작성해주세요.
-        최대한 전문적이고 설득력 있게 작성해주세요.
-        그리고 번호와 본론 서론같은 단어는 제거하되 마크다운 형식은 유지해줘. 인위적이지 않고 자연스럽게 작성해줘.
-        """
+def generate_blog_content(outline, blog_title, keywords, product_name, openai_api_key=None):
+    """Generate blog content from outline using LCEL and ChatOpenAI."""
+    system_msg = (
+        "당신은 한국어로 매력적인 광고성 블로그 글을 작성하는 작가입니다. "
+        "아래 제공된 목차와 메타 정보를 바탕으로 SEO 요소를 반영해 글을 작성하세요. "
+        "번호/불릿을 과도하게 사용하지 말고, 적절한 Markdown 헤더와 문단으로 자연스럽게 구성하세요."
     )
 
-    llm_gpt = ChatOpenAI(
-        openai_api_key=openai_api_key,
-        model_name="o1-mini",
-        temperature=1
+    prompt = ChatPromptTemplate.from_messages(
+        [
+            ("system", system_msg),
+            (
+                "human",
+                (
+                    "제품명: {product_name}\n"
+                    "블로그 제목: {blog_title}\n"
+                    "키워드: {keywords}\n\n"
+                    "[목차]\n{outline}\n\n"
+                    "위 목차를 충실히 따르되, 한글로 자연스럽고 설득력 있게 작성하세요."
+                ),
+            ),
+        ]
     )
 
-    content_chain = LLMChain(llm=llm_gpt, prompt=content_prompt)
-    generated_content = content_chain.run({"outline": outline})
+    llm = ChatOpenAI(model="gpt-4o-mini", api_key=(openai_api_key or OPENAI_API_KEY), temperature=0.8)
+    chain = prompt | llm | StrOutputParser()
+
+    generated_content = chain.invoke(
+        {
+            "outline": outline,
+            "blog_title": blog_title,
+            "keywords": ", ".join(keywords) if isinstance(keywords, list) else str(keywords),
+            "product_name": product_name,
+        }
+    )
     return generated_content
 
-
-
-
-# template=f"""
-#         다음은 블로그 글 작성 가이드라인이다.
-
-#         목차:
-#         {{outline}}
-
-#         블로그 제목: {blog_title}
-#         키워드: {keywords}
-#         제품명: {product_name}
-
-#         목차를 읽고 목차를 그대로 복사하지 말고, 목차를 기반으로 목차의 각 항목에 대한 풍부한 설명을 포함한 새로운 광고성 블로그 글을 작성해주세요.
-#         그리고 애니메이션 캐릭터같이 귀여운 말투로 작성해주세요.
-#         최대한 전문적이고 설득력 있게 작성해줘.
-#         """

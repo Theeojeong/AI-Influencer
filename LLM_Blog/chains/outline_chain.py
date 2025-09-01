@@ -1,37 +1,61 @@
-from openai import OpenAI
+from typing import List, Tuple
+from langchain_openai import ChatOpenAI
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import StrOutputParser
 from LLM_Blog.config import OPENAI_API_KEY
 
-client = OpenAI(api_key=OPENAI_API_KEY)
 
-
-def create_outline_with_additional_info(product_name, specs_info_list, blog_title, keywords):
-    combined_info = ""
-    for spec, db_info, web_info in specs_info_list:
-        combined_info += f"스펙: {spec}\nDB정보:\n{db_info}\n웹 검색 정보:\n{web_info}\n\n"
-
-    prompt = f"""
-    다음은 제품명이야.
-    제품명: {product_name}
-    다음은 스펙들에 대한 상세정보야.
-    {combined_info}
-
-    키워드: {keywords}
-    블로그 제목: {blog_title}
-
-    위 정보들을 반영해서 블로그 글의 목차(아웃라인)를 만들어줘.
-    각 목차 항목에 간단한 설명을 추가해줘.
-    간단한 설명은 스펙에 대한 상세정보를 참고해서 독자가 보기에 객관적이고 구체적이고 수치화된 스펙을 확인할 수 있게 끔 작성해줘.
-    목차 항목을 풍부하게 구성해줘.
-    본론은 적당하게 최대 4개까지만 만들어줘.
-    그리고 블로그 seo 요소를 반영해줘.
+def create_outline_with_additional_info(
+    product_name: str,
+    specs_info_list: List[Tuple[str, str | None, str | None]],
+    blog_title: str,
+    keywords: List[str],
+) -> tuple[str, str]:
     """
+    Build an SEO-friendly outline using LCEL with ChatOpenAI.
+    specs_info_list: list of (spec, db_info, web_info)
+    Returns: (outline_markdown, combined_info_text)
+    """
+    combined_info_parts: List[str] = []
+    for spec, db_info, web_info in specs_info_list:
+        combined_info_parts.append(
+            f"스펙: {spec}\nDB정보:\n{db_info or '-'}\n웹검색정보:\n{web_info or '-'}\n"
+        )
+    combined_info = "\n".join(combined_info_parts)
 
-    response = client.responses.create(
-    model="o1",
-    instructions="너는 프로페셔널 광고성 블로그 글 기획자다.",
-    input=prompt,  # 실제 유저 질문/요청
-    max_output_tokens=3000,
-)
-    outline = response.output_text
+    system_msg = (
+        "당신은 한국어 블로그 글 기획 전문가입니다. 제공된 제품명, 키워드, "
+        "스펙 관련 정보(DB/웹)를 바탕으로 SEO를 고려한 목차(아웃라인)를 작성하세요. "
+        "각 항목에는 한 줄 설명을 덧붙이고, 본론 항목은 3~4개 수준으로 작성하세요. "
+        "번호를 붙이지 말고 Markdown 헤더로 구조화하세요."
+    )
 
+    prompt = ChatPromptTemplate.from_messages(
+        [
+            ("system", system_msg),
+            (
+                "human",
+                (
+                    "제품명: {product_name}\n"
+                    "블로그 제목: {blog_title}\n"
+                    "키워드: {keywords}\n\n"
+                    "아래 추가 정보를 충분히 반영해 목차를 생성하세요.\n"
+                    "[추가 정보]\n{combined_info}\n"
+                ),
+            ),
+        ]
+    )
+
+    llm = ChatOpenAI(model="gpt-4o-mini", api_key=OPENAI_API_KEY, temperature=0.5)
+    chain = prompt | llm | StrOutputParser()
+
+    outline = chain.invoke(
+        {
+            "product_name": product_name,
+            "blog_title": blog_title,
+            "keywords": ", ".join(keywords) if isinstance(keywords, list) else str(keywords),
+            "combined_info": combined_info,
+        }
+    )
     return outline, combined_info
+
