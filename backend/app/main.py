@@ -1,4 +1,4 @@
-from app.router import blog, core, core_check, process_check, healthcheck, test, sns, biz_info, biz_contacts, google_auth, kakao_auth, exaone
+from app.router import core, core_check, process_check, healthcheck, test, sns, biz_info, biz_contacts, google_auth, kakao_auth, exaone
 from fastapi import FastAPI, UploadFile, File, Request
 from fastapi.middleware.cors import CORSMiddleware
 from app.logger import setup_logging
@@ -49,9 +49,16 @@ app.add_middleware(
 )
 
 # 라우터 등록
+USE_MOCK = os.getenv("DEV_MODE", "").lower() == "mock" or os.getenv("MOCK_DB") == "1" or os.getenv("DISABLE_DB") == "1"
+
+if USE_MOCK:
+    from app.router import blog_mock as blog_router  # type: ignore
+else:
+    from app.router import blog as blog_router  # type: ignore
+
 app.include_router(healthcheck.router)
 app.include_router(process_check.router)
-app.include_router(blog.router)
+app.include_router(blog_router.router)
 app.include_router(sns.router)
 app.include_router(core.router)
 app.include_router(google_auth.router)
