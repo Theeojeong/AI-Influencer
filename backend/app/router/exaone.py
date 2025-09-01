@@ -1,21 +1,15 @@
-from fastapi import APIRouter, Depends, HTTPException
-from typing import Any, Dict, List, Optional
-from sqlalchemy.ext.asyncio import AsyncSession
-from app.schemas.exaone import GenerateRequest
-from app.services.exaone_service import generate_ollama_exaone_service, generate_stream
-from app.database.database import get_db
+from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
+from app.schemas.exaone import GenerateRequest
+from app.services.exaone_service import generate_stream
+
 
 router = APIRouter(prefix="/exaone", tags=["exaone"])
 
-# 블로그 전체 조회
 
-
-@router.post("/generate", summary="Ollama 송수신")
+@router.post("/generate", summary="OpenAI 스트리밍 응답")
 async def generate_streaming(request: GenerateRequest):
-    """
-    스트리밍 방식으로 LLM 응답 반환.
-    """
+    """OpenAI Chat 모델의 스트리밍 응답을 반환합니다."""
     payload = {"model": request.model, "prompt": request.prompt}
     return StreamingResponse(generate_stream(payload), media_type="text/plain")
 
