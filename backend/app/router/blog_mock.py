@@ -11,6 +11,10 @@ from app.schemas.blog import (
     CommentCreate,
     CommentDelete,
     CommentResponse,
+    TitleSuggestRequest,
+    TitleSuggestResponse,
+    GenerateBlogRequest,
+    GenerateBlogResponse,
 )
 
 
@@ -54,6 +58,14 @@ def _load_comments() -> list:
 def _save_comments(data: list) -> None:
     with open(_COMMENTS_FILE, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
+
+
+def _ensure_repo_root_on_path():
+    # Add repository root to sys.path so that `LLM_Blog` is importable
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    repo_root = os.path.abspath(os.path.join(current_dir, "../../../"))
+    if repo_root not in sys.path:
+        sys.path.insert(0, repo_root)
 
 
 @router.get("/", summary="블로그 전체 불러오기 (Mock)")
@@ -204,3 +216,32 @@ async def delete_comment(comment: CommentDelete, post_id: int):
         _save_posts(posts)
         return {"message": "deleted"}
 
+
+# ====== AI generation endpoints (reuse LLM_Blog workflow; DB 불필요) ======
+@router.post("/ai/suggest_titles", response_model=TitleSuggestResponse, summary="AI 추천 제목 생성 (Mock mode)")
+async def suggest_titles(payload: TitleSuggestRequest):
+    try:
+        _ensure_repo_root_on_path()
+        from LLM_Blog.utils.ai_utils import get_ai_suggested_titles  # type: ignore
+
+        titles = get_ai_suggested_titles(payload.product_name, max_suggestions=payload.max)
+        return TitleSuggestResponse(titles=titles or [])
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Title suggestion failed: {e}")
+
+
+@router.post("/ai/generate", response_model=GenerateBlogResponse, summary="블로그 본문 생성 (Mock mode)")
+async def generate_blog(payload: GenerateBlogRequest):
+    try:
+        _ensure_repo_root_on_path()
+        from LLM_Blog.graphs.blog_generation_graph import blog_generation_workflow  # type: ignore
+
+        content, used_urls = blog_generation_workflow(
+            payload.product_name,
+            payload.product_specs,
+            payload.blog_title,
+            payload.keywords,
+        )
+        return GenerateBlogResponse(content=content or "", used_urls=used_urls or [])
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Content generation failed: {e}")

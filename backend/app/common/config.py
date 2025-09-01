@@ -21,13 +21,36 @@ def _env_key_from_ssm(name: str) -> str:
 
 
 def get_parameter(name, with_decryption=True, default: str | None = None):
-    # 1) Prefer environment variable for local development
+    """
+    Resolve a configuration value with the following precedence:
+    1) Environment variables (with common fallbacks, e.g., DB_USER -> DB_USERNAME)
+    2) If DEV_MODE=mock or DISABLE_SSM=1: return default (or "") without calling SSM
+    3) AWS SSM Parameter Store
+    """
+    # 1) Prefer environment variable for local development (with fallbacks)
     env_key = _env_key_from_ssm(name)
     env_val = os.getenv(env_key)
-    if env_val is not None:
+    if env_val in (None, ""):
+        # Backward-compat fallbacks for common keys
+        fallbacks = {
+            "DB_USERNAME": ["DB_USER"],
+            "DB_DB_NAME": ["DB_NAME"],
+        }
+        for alt in fallbacks.get(env_key, []):
+            env_val = os.getenv(alt)
+            if env_val not in (None, ""):
+                break
+    if env_val not in (None, ""):
         return env_val
 
-    # 2) Try AWS SSM (for deployed environments)
+    # 2) Skip SSM entirely in local/mock mode
+    if os.getenv("DEV_MODE", "").lower() == "mock" or os.getenv("DISABLE_SSM") == "1":
+        # In mock mode, do not warn; just use default or empty
+        if default is not None:
+            return default
+        return ""
+
+    # 3) Try AWS SSM (for deployed environments)
     try:
         client = boto3.client('ssm', region_name="ap-northeast-2")
         response = client.get_parameter(Name=name, WithDecryption=with_decryption)
