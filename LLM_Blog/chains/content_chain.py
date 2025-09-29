@@ -1,10 +1,11 @@
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
-from LLM_Blog.config import OPENAI_API_KEY
+from dotenv import load_dotenv
+load_dotenv()
 
 
-def generate_blog_content(outline, blog_title, keywords, product_name, openai_api_key=None):
+def generate_blog_content(outline, blog_title, keywords, product_name):
     """Generate blog content from outline using LCEL and ChatOpenAI."""
     system_msg = (
         "당신은 한국어로 매력적인 광고성 블로그 글을 작성하는 작가입니다. "
@@ -28,7 +29,7 @@ def generate_blog_content(outline, blog_title, keywords, product_name, openai_ap
         ]
     )
 
-    llm = ChatOpenAI(model="gpt-4o-mini", api_key=(openai_api_key or OPENAI_API_KEY), temperature=0.8)
+    llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.8)
     chain = prompt | llm | StrOutputParser()
 
     generated_content = chain.invoke(

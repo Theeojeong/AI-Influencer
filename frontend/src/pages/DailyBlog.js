@@ -90,8 +90,28 @@ const DailyBlog = () => {
       setSuggestions(res.data.titles || []);
       setShowSuggest(true);
     } catch (e) {
-      console.error(e);
-      alert("제목 추천 중 오류가 발생했습니다.");
+      console.error("AI 제목 추천 오류:", e);
+
+      // 더 자세한 오류 정보 출력
+      let errorMessage = "제목 추천 중 오류가 발생했습니다.";
+      if (e.response) {
+        console.error("Response data:", e.response.data);
+        console.error("Response status:", e.response.status);
+        console.error("Response headers:", e.response.headers);
+        errorMessage += `\n상태 코드: ${e.response.status}`;
+        if (e.response.data && e.response.data.detail) {
+          errorMessage += `\n오류 상세: ${e.response.data.detail}`;
+        }
+      } else if (e.request) {
+        console.error("Request:", e.request);
+        errorMessage +=
+          "\n서버에 연결할 수 없습니다. 백엔드 서버가 실행중인지 확인해주세요.";
+      } else {
+        console.error("Error:", e.message);
+        errorMessage += `\n오류 내용: ${e.message}`;
+      }
+
+      alert(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -168,10 +188,18 @@ const DailyBlog = () => {
         />
 
         <div style={{ display: "flex", gap: 8, marginBottom: 14 }}>
-          <button style={styles.button} onClick={handleSuggest} disabled={loading}>
+          <button
+            style={styles.button}
+            onClick={handleSuggest}
+            disabled={loading}
+          >
             AI 추천 제목
           </button>
-          <button style={styles.buttonPrimary} onClick={handleGenerate} disabled={loading}>
+          <button
+            style={styles.buttonPrimary}
+            onClick={handleGenerate}
+            disabled={loading}
+          >
             글 생성
           </button>
         </div>
@@ -227,7 +255,10 @@ const DailyBlog = () => {
                 >
                   사용하기
                 </button>
-                <button style={styles.button} onClick={() => setShowSuggest(false)}>
+                <button
+                  style={styles.button}
+                  onClick={() => setShowSuggest(false)}
+                >
                   닫기
                 </button>
               </div>
@@ -240,10 +271,20 @@ const DailyBlog = () => {
         {content ? (
           <>
             <div style={styles.counts}>
-              (공백 포함 <span style={{ color: "#6c63ff" }}>{counts.charCount}</span> 자 |
-              <span style={{ fontWeight: 600 }}> {counts.byteCount} byte</span>, 공백 제외
-              <span style={{ color: "#6c63ff" }}> {counts.noSpaceCount}</span> 자 |
-              <span style={{ fontWeight: 600 }}> {counts.noSpaceByte} byte</span>)
+              (공백 포함{" "}
+              <span style={{ color: "#6c63ff" }}>{counts.charCount}</span> 자 |
+              <span style={{ fontWeight: 600 }}> {counts.byteCount} byte</span>,
+              공백 제외
+              <span style={{ color: "#6c63ff" }}>
+                {" "}
+                {counts.noSpaceCount}
+              </span>{" "}
+              자 |
+              <span style={{ fontWeight: 600 }}>
+                {" "}
+                {counts.noSpaceByte} byte
+              </span>
+              )
             </div>
 
             {usedUrls && usedUrls.length > 0 && (
@@ -251,7 +292,10 @@ const DailyBlog = () => {
                 <h4 style={{ fontSize: 14, margin: 0 }}>스펙 정보 출처</h4>
                 {usedUrls.map((u) => (
                   <p key={u} style={{ margin: 0 }}>
-                    - <a href={u} target="_blank" rel="noreferrer">{u}</a>
+                    -{" "}
+                    <a href={u} target="_blank" rel="noreferrer">
+                      {u}
+                    </a>
                   </p>
                 ))}
               </div>
@@ -261,13 +305,24 @@ const DailyBlog = () => {
               <pre style={styles.pre}>{content}</pre>
             </div>
 
-            <div style={{ display: "flex", gap: 12, marginTop: 12, alignItems: "center" }}>
+            <div
+              style={{
+                display: "flex",
+                gap: 12,
+                marginTop: 12,
+                alignItems: "center",
+              }}
+            >
               <input
                 type="file"
                 accept="image/png, image/jpeg"
                 onChange={(e) => setImageFile(e.target.files?.[0] || null)}
               />
-              <button style={styles.buttonPrimary} onClick={handleSubmit} disabled={loading}>
+              <button
+                style={styles.buttonPrimary}
+                onClick={handleSubmit}
+                disabled={loading}
+              >
                 제출하기
               </button>
             </div>

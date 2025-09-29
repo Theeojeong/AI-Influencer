@@ -13,7 +13,12 @@ from utils.google_utils import google_search
 from chains.embedding_chain import update_embedding_cache
 from chains.outline_chain import create_outline_with_additional_info
 from chains.content_chain import generate_blog_content
-from LLM_Blog.config import OPENAI_API_KEY, GOOGLE_API_KEY, GOOGLE_CSE_ID
+from dotenv import load_dotenv
+import os
+load_dotenv()
+
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+GOOGLE_CSE_ID = os.getenv("GOOGLE_CSE_ID")
 
 
 def _format_docs(docs) -> str:
@@ -34,8 +39,8 @@ class BlogState(TypedDict):
 
 def _search_and_retrieve(state: BlogState) -> BlogState:
     """For each spec, search web, build a tiny RAG, and summarize details."""
-    llm = ChatOpenAI(model="gpt-4o-mini", api_key=OPENAI_API_KEY, temperature=0.2)
-    embeddings = OpenAIEmbeddings(model="text-embedding-3-small", api_key=OPENAI_API_KEY)
+    llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.2)
+    embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
 
     used_urls: List[str] = []
     specs_info_list: List[Tuple[str, str | None, str | None]] = []
@@ -80,18 +85,15 @@ def _search_and_retrieve(state: BlogState) -> BlogState:
                 ),
             ]
         )
-
         rag_chain = (
             {"context": retriever | _format_docs, "question": RunnablePassthrough()}
             | rag_prompt
             | llm
             | StrOutputParser()
         )
-
         question = f"{spec}의 구체적인 스펙과 특징을 한국어로 요약해 주세요. 실제 수치/규격 중심으로."
         web_summary = rag_chain.invoke(question)
 
-        # Optionally update per-spec embedding cache for downstream uses
         try:
             update_embedding_cache(spec, web_summary)
         except Exception:
@@ -102,7 +104,7 @@ def _search_and_retrieve(state: BlogState) -> BlogState:
     new_state = dict(state)
     new_state["used_urls"] = used_urls
     new_state["specs_info_list"] = specs_info_list
-    return new_state  # type: ignore[return-value]
+    return new_state
 
 
 def _create_outline(state: BlogState) -> BlogState:
@@ -112,7 +114,7 @@ def _create_outline(state: BlogState) -> BlogState:
     new_state = dict(state)
     new_state["outline"] = outline
     new_state["combined_info"] = combined
-    return new_state  # type: ignore[return-value]
+    return new_state
 
 
 def _generate_content(state: BlogState) -> BlogState:
@@ -121,31 +123,26 @@ def _generate_content(state: BlogState) -> BlogState:
         state["blog_title"],
         state.get("keywords", []),
         state["product_name"],
-        OPENAI_API_KEY,
     )
     new_state = dict(state)
     new_state["content"] = content
-    return new_state  # type: ignore[return-value]
+    return new_state
 
 
 def _build_graph():
-    g = StateGraph(BlogState)
-    g.add_node("search_and_retrieve", _search_and_retrieve)
-    g.add_node("create_outline", _create_outline)
-    g.add_node("generate_content", _generate_content)
+    graph = StateGraph(BlogState)
+    graph.add_node("search_and_retrieve", _search_and_retrieve)
+    graph.add_node("create_outline", _create_outline)
+    graph.add_node("generate_content", _generate_content)
 
-    g.set_entry_point("search_and_retrieve")
-    g.add_edge("search_and_retrieve", "create_outline")
-    g.add_edge("create_outline", "generate_content")
-    g.add_edge("generate_content", END)
-    return g.compile()
+    graph.set_entry_point("search_and_retrieve")
+    graph.add_edge("search_and_retrieve", "create_outline")
+    graph.add_edge("create_outline", "generate_content")
+    graph.add_edge("generate_content", END)
+    return graph.compile()
 
 
 def blog_generation_workflow(product_name, product_specs_list, blog_title, keywords):
-    """
-    Orchestrate the workflow with LangGraph and return (content, used_urls).
-    Input/Output signature kept compatible with existing Streamlit app.
-    """
     app = _build_graph()
     initial_state: BlogState = {
         "product_name": product_name,

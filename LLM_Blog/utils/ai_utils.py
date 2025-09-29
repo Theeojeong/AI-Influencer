@@ -1,7 +1,8 @@
 from openai import OpenAI
-from LLM_Blog.config import OPENAI_API_KEY
+from dotenv import load_dotenv
+load_dotenv()
 
-client = OpenAI(api_key=OPENAI_API_KEY)
+client = OpenAI()
 
 
 def _parse_title_lines(text: str) -> list[str]:
@@ -48,10 +49,9 @@ def get_ai_suggested_titles(product_name, max_suggestions=4):
         except Exception:
             # Legacy SDK fallback
             try:
-                import openai as openai_legacy  # type: ignore
-
-                openai_legacy.api_key = OPENAI_API_KEY
-                out = openai_legacy.ChatCompletion.create(
+                import openai  # type: ignore
+                
+                out = openai.ChatCompletion.create(
                     model="gpt-3.5-turbo",
                     messages=[{"role": "user", "content": prompt}],
                     temperature=0.8,
@@ -62,11 +62,3 @@ def get_ai_suggested_titles(product_name, max_suggestions=4):
             except Exception as e2:
                 print(f"Title suggestion failed: {e2}")
                 return []
-
-
-
-# prompt = f"""
-# 당신은 블로그 제목을 짓는 전문가입니다.
-# '{product_name}'을 광고하는 블로그 글 제목을 {max_suggestions}개 추천해줘.
-# 순수하게 제목만 남겨줘. 번호와 따옴표도 제거해줘.
-# """

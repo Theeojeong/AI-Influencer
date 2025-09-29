@@ -3,22 +3,13 @@ import html
 import openai
 import streamlit as st
 from dotenv import load_dotenv
+load_dotenv()
 
 from streamlit_tags import st_tags
-# from streamlit_modal import Modal  # 제거: st.dialog 사용
 
 from graphs.blog_generation_graph import blog_generation_workflow
 from utils.ai_utils import get_ai_suggested_titles
 from utils.db_utils import get_connection
-
-
-# .env 파일 로드
-load_dotenv()
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-if not OPENAI_API_KEY:
-    st.error("OPENAI_API_KEY가 설정되어 있지 않습니다. .env 파일을 확인하세요.")
-    st.stop()
-openai.api_key = OPENAI_API_KEY  # .env에 담긴 OPENAI_API_KEY 사용
 
 st.set_page_config(layout="wide")
 

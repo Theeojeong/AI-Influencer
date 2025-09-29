@@ -2,7 +2,8 @@ from typing import List, Tuple
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
-from LLM_Blog.config import OPENAI_API_KEY
+from dotenv import load_dotenv
+load_dotenv()
 
 
 def create_outline_with_additional_info(
@@ -11,11 +12,7 @@ def create_outline_with_additional_info(
     blog_title: str,
     keywords: List[str],
 ) -> tuple[str, str]:
-    """
-    Build an SEO-friendly outline using LCEL with ChatOpenAI.
-    specs_info_list: list of (spec, db_info, web_info)
-    Returns: (outline_markdown, combined_info_text)
-    """
+
     combined_info_parts: List[str] = []
     for spec, db_info, web_info in specs_info_list:
         combined_info_parts.append(
@@ -46,7 +43,7 @@ def create_outline_with_additional_info(
         ]
     )
 
-    llm = ChatOpenAI(model="gpt-4o-mini", api_key=OPENAI_API_KEY, temperature=0.5)
+    llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.5)
     chain = prompt | llm | StrOutputParser()
 
     outline = chain.invoke(
