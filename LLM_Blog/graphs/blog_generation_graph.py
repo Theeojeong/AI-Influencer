@@ -14,11 +14,11 @@ from chains.embedding_chain import update_embedding_cache
 from chains.outline_chain import create_outline_with_additional_info
 from chains.content_chain import generate_blog_content
 from dotenv import load_dotenv
-import os
 load_dotenv()
+import os
 
-GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
-GOOGLE_CSE_ID = os.getenv("GOOGLE_CSE_ID")
+GOOGLE_API_KEY = os.environ.get("GOOGLE_API_KEY")
+GOOGLE_CSE_ID = os.environ.get("GOOGLE_CSE_ID")
 
 
 def _format_docs(docs) -> str:
@@ -157,4 +157,3 @@ def blog_generation_workflow(product_name, product_specs_list, blog_title, keywo
     }
     final = app.invoke(initial_state)
     return final.get("content", ""), final.get("used_urls", [])
-
